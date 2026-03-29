@@ -1582,16 +1582,13 @@ function Pipeline() {
 // ─────────────────────────────────────────────────────────────────────────────
 // API KEY BANNER
 // ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-// API KEY BANNER
-// ─────────────────────────────────────────────────────────────────────────────
 function ApiKeyBanner({apiKey, setApiKey}) {
   const [show, setShow] = useState(false);
   const [input, setInput] = useState("");
 
   const save = () => {
     const k = input.trim();
-    if (!k.startsWith("sk-or-")) { alert("OpenRouter key should start with sk-or-"); return; }
+    if (!k.startsWith("gsk_")) { alert("Key should start with gsk_"); return; }
     setApiKey(k);
     sSet("apex_apikey", k);
     setShow(false);
@@ -1613,18 +1610,17 @@ function ApiKeyBanner({apiKey, setApiKey}) {
         background:"rgba(232,184,75,.1)",borderBottom:"1px solid rgba(232,184,75,.3)",
         padding:"7px 18px",display:"flex",alignItems:"center",gap:12,cursor:"pointer"}}
         onClick={()=>setShow(true)}>
-        <span style={{fontSize:11,fontFamily:"var(--fm)",color:"var(--a)"}}>⚠ NO API KEY — agents offline. Click to add your OpenRouter API key.</span>
+        <span style={{fontSize:11,fontFamily:"var(--fm)",color:"var(--a)"}}>⚠ NO API KEY — agents offline. Click to add your Groq API key.</span>
         <button className="btn btn-a" style={{fontSize:10,padding:"3px 10px"}} onClick={e=>{e.stopPropagation();setShow(true);}}>ADD KEY →</button>
       </div>
       {show && (
         <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(0,0,0,.7)",display:"flex",alignItems:"center",justifyContent:"center"}} onClick={()=>setShow(false)}>
           <div className="card" style={{padding:28,width:440,maxWidth:"90vw"}} onClick={e=>e.stopPropagation()}>
-            <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800,marginBottom:6}}>Add OpenRouter API Key</div>
+            <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800,marginBottom:6}}>Add Groq API Key</div>
             <p style={{fontSize:13,color:"var(--t2)",lineHeight:1.6,marginBottom:16}}>
-              Get a free key at <span style={{color:"var(--a)"}}>openrouter.ai</span>.<br/>
-              Completely free — runs Meta Llama 3. Key stays in your browser only.
+              Key stays securely in your browser only. Powered by ultra-fast Groq LPUs.
             </p>
-            <input className="input" placeholder="sk-or-v1-..." value={input}
+            <input className="input" placeholder="gsk_..." value={input}
               onChange={e=>setInput(e.target.value)}
               onKeyDown={e=>e.key==="Enter"&&save()}
               style={{marginBottom:12,fontFamily:"var(--fm)",fontSize:12}}/>

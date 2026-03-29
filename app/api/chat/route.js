@@ -8,16 +8,15 @@ export async function POST(req) {
       return NextResponse.json({ error: "API Key is missing." }, { status: 401 });
     }
 
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    // Connects to Groq's insanely fast API
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-        "HTTP-Referer": "http://localhost:3000", 
-        "X-Title": "APEX OS"
+        "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "openrouter/free",
+        model: "llama-3.3-70b-versatile", // One of the smartest and fastest models
         max_tokens: 1000,
         messages: [
           { role: "system", content: system },
