@@ -300,6 +300,105 @@ function XPBar({id, cfg}) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// ONBOARDING
+// ─────────────────────────────────────────────────────────────────────────────
+function Onboarding({onComplete}) {
+  const [step, setStep] = useState(0);
+  const [cfg, setCfg] = useState({ brandName:"", tagline:"AI Operating System", accentColor:"#E8B84B" });
+
+  const colors = ["#E8B84B","#00E5FF","#00E676","#B388FF","#FF6D00","#FF3B3B","#FF9800"];
+
+  const steps = [
+    {
+      icon:"⌬", title:"Welcome to APEX OS",
+      body:"Your autonomous AI executive team. 7 agents running 24/7 — strategy, content, sales, dev, finance, and client success. All in one command center.",
+      content: null,
+      next:"Let's Set It Up →"
+    },
+    {
+      icon:"◈", title:"Brand Your OS",
+      body:"Make it yours. Enter your brand name to white-label the entire system.",
+      content: (
+        <div style={{marginTop:20,display:"flex",flexDirection:"column",gap:14}}>
+          <div>
+            <label style={{fontSize:11,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:6}}>BRAND NAME</label>
+            <input className="input" placeholder="e.g. RAWGROWTH, NEXUS, EMPIRE..." value={cfg.brandName} onChange={e=>setCfg(p=>({...p,brandName:e.target.value}))} style={{fontSize:15}} autoFocus/>
+          </div>
+          <div>
+            <label style={{fontSize:11,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:6}}>TAGLINE (optional)</label>
+            <input className="input" placeholder="e.g. AI Operating System" value={cfg.tagline} onChange={e=>setCfg(p=>({...p,tagline:e.target.value}))}/>
+          </div>
+          <div>
+            <label style={{fontSize:11,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:8}}>ACCENT COLOR</label>
+            <div style={{display:"flex",gap:8}}>
+              {colors.map(c=>(
+                <div key={c} onClick={()=>setCfg(p=>({...p,accentColor:c}))} style={{
+                  width:28,height:28,borderRadius:"50%",background:c,cursor:"pointer",
+                  border:`2px solid ${cfg.accentColor===c?"white":"transparent"}`,
+                  boxShadow:cfg.accentColor===c?`0 0 12px ${c}`:undefined,
+                  transition:"all .15s"
+                }}/>
+              ))}
+            </div>
+          </div>
+        </div>
+      ),
+      next:"Continue →"
+    },
+    {
+      icon:"◎", title:"Meet Your Team",
+      body:"7 specialized AI agents. Each one is a C-suite exec. Each one executes on command.",
+      content: (
+        <div style={{marginTop:20,display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          {Object.entries(DEFAULT_CONFIG.agents).map(([id,a])=>(
+            <div key={id} style={{padding:"10px 12px",background:"var(--s2)",border:`1px solid ${a.color}30`,borderRadius:"var(--r)",borderLeft:`3px solid ${a.color}`}}>
+              <div style={{fontSize:14,marginBottom:2}}>{a.icon} <span style={{fontFamily:"var(--fd)",fontWeight:700,fontSize:12,color:a.color}}>{a.name}</span></div>
+              <div style={{fontSize:11,color:"var(--t2)"}}>{a.role}</div>
+            </div>
+          ))}
+        </div>
+      ),
+      next:"Launch APEX OS →"
+    }
+  ];
+
+  const s = steps[step];
+  const canNext = step !== 1 || cfg.brandName.trim().length > 0;
+
+  const handleNext = () => {
+    if (step < steps.length - 1) { setStep(p=>p+1); }
+    else { onComplete({...DEFAULT_CONFIG, brandName:cfg.brandName||"MY BRAND", tagline:cfg.tagline, accentColor:cfg.accentColor}); }
+  };
+
+  return (
+    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20,position:"relative",zIndex:1}}>
+      <div style={{width:"100%",maxWidth:520}}>
+        {/* Steps indicator */}
+        <div style={{display:"flex",gap:6,justifyContent:"center",marginBottom:32}}>
+          {steps.map((_,i)=>(
+            <div key={i} style={{width:i===step?24:8,height:4,borderRadius:2,background:i<=step?"var(--a)":"var(--b2)",transition:"all .3s"}}/>
+          ))}
+        </div>
+
+        <div className="card fu" style={{padding:32}}>
+          <div style={{textAlign:"center",marginBottom:20}}>
+            <div style={{fontSize:48,marginBottom:12,filter:"drop-shadow(0 0 20px var(--a))"}}>{s.icon}</div>
+            <h2 style={{fontFamily:"var(--fd)",fontSize:22,fontWeight:800,letterSpacing:"-.01em",marginBottom:8}}>{s.title}</h2>
+            <p style={{color:"var(--t2)",fontSize:14,lineHeight:1.6}}>{s.body}</p>
+          </div>
+          {s.content}
+          <button className="btn btn-a fu" onClick={handleNext} disabled={!canNext}
+            style={{width:"100%",justifyContent:"center",padding:"12px",marginTop:24,fontSize:13}}>
+            {s.next}
+          </button>
+          {step > 0 && <button onClick={()=>setStep(p=>p-1)} style={{width:"100%",background:"none",border:"none",color:"var(--t3)",cursor:"pointer",fontSize:12,fontFamily:"var(--fm)",marginTop:10,padding:"6px"}}>← Back</button>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // TOPBAR
 // ─────────────────────────────────────────────────────────────────────────────
 function TopBar({cfg, liveCount}) {
@@ -584,7 +683,7 @@ function Settings({cfg, setCfg, notify}) {
         <button 
           className="btn btn-g" 
           onClick={() => {
-            if(window.confirm("This will completely wipe your entire OS and all memory. Continue?")) {
+            if(window.confirm("This will completely wipe your entire OS, all memory, and send you back to onboarding. Continue?")) {
               localStorage.clear();
               window.location.reload();
             }
@@ -2213,7 +2312,8 @@ function Pipeline() {
 // ─────────────────────────────────────────────────────────────────────────────
 export default function App() {
   const [cfg, setCfg]         = useState(DEFAULT_CONFIG);
-  const [active, setActive]   = useState("agents");
+  const [onboarded, setOnb]   = useState(false);
+  const [active, setActive]   = useState("dashboard");
   const [tasks, setTasks]     = useState(DEFAULT_TASKS);
   const [sops]                = useState(DEFAULT_SOPS);
   const [skills, setSkills]   = useState(DEFAULT_SKILLS);
@@ -2224,19 +2324,22 @@ export default function App() {
   const [apiKey, setApiKey]   = useState("");
   const [baseUrl, setBaseUrl] = useState("https://api.groq.com/openai/v1");
   const [model, setModel]     = useState("llama-3.3-70b-versatile");
+  const [showApiPopup, setShowApiPopup] = useState(false);
 
   const loaded = useRef(false);
 
   useEffect(()=>{
     Promise.all([
       sGet("apex_cfg", DEFAULT_CONFIG),
+      sGet("apex_onboarded", false),
       sGet("apex_tasks_v3", DEFAULT_TASKS),
       sGet("apex_skills_v3", DEFAULT_SKILLS),
       sGet("llm_api_key", ""), 
       sGet("llm_base_url", "https://api.groq.com/openai/v1"),
       sGet("llm_model", "llama-3.3-70b-versatile")
-    ]).then(([c, t, sk, k, b, m])=>{
+    ]).then(([c, ob, t, sk, k, b, m])=>{
       setCfg(c || DEFAULT_CONFIG);
+      setOnb(ob || false);
       setTasks(t || DEFAULT_TASKS);
       setSkills(sk || DEFAULT_SKILLS);
       
@@ -2244,11 +2347,12 @@ export default function App() {
       setBaseUrl(b || "https://api.groq.com/openai/v1");
       setModel(m || "llama-3.3-70b-versatile");
       
+      if (!k) setShowApiPopup(true); 
       loaded.current = true;
     }).catch(()=>{
       setCfg(DEFAULT_CONFIG);
-      setTasks(DEFAULT_TASKS);
-      setSkills(DEFAULT_SKILLS);
+      setOnb(false);
+      setShowApiPopup(true);
       loaded.current = true;
     });
   },[]);
@@ -2258,6 +2362,28 @@ export default function App() {
   useEffect(()=>{ if(cfg&&loaded.current){ sSet("apex_cfg",cfg); }},[cfg]);
 
   const notify = useCallback((msg)=>{ setNotif(null); setTimeout(()=>setNotif(msg),40); },[]);
+
+  const completeOnboarding = (newCfg) => {
+    setCfg(newCfg); sSet("apex_cfg",newCfg);
+    setOnb(true); sSet("apex_onboarded",true);
+  };
+
+  const saveApiConfig = () => {
+    sSet("llm_api_key", apiKey.trim());
+    sSet("llm_base_url", baseUrl.trim());
+    sSet("llm_model", model.trim());
+    setShowApiPopup(false);
+    notify("API Configuration secured!");
+  };
+
+  if(!onboarded) {
+    return (
+      <>
+        <style>{makeCSS(DEFAULT_CONFIG.accentColor)}</style>
+        <Onboarding onComplete={completeOnboarding}/>
+      </>
+    );
+  }
 
   const renderView = () => {
     const p = {cfg, notify, tasks, setTasks};
@@ -2277,7 +2403,7 @@ export default function App() {
       case "sops":      return <SOPs sops={sops} cfg={cfg} notify={notify}/>;
       case "orgchart":  return <OrgChart cfg={cfg} setActive={setActive} setChatAgent={setChatAgent} tasks={tasks}/>;
       case "settings":  return <Settings cfg={cfg} setCfg={setCfg} notify={notify}/>;
-      default:          return <Agents cfg={cfg} setActive={setActive} setChatAgent={setChatAgent}/>;
+      default:          return <Dashboard {...p} setActive={setActive}/>;
     }
   };
 
@@ -2290,6 +2416,37 @@ export default function App() {
         {renderView()}
       </main>
       {notif && <Notif key={notif+Date.now()} msg={notif} onClose={()=>setNotif(null)}/>}
+
+      {showApiPopup && (
+        <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(5,7,13,.85)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+          <div className="card fu" style={{width:"100%",maxWidth:480,padding:24,borderTop:"3px solid var(--a)"}}>
+            <div style={{fontFamily:"var(--fd)",fontWeight:800,fontSize:18,marginBottom:8}}>System Initialization</div>
+            <div style={{fontSize:13,color:"var(--t2)",marginBottom:16,lineHeight:1.5}}>
+              Configure your generic Omni-Router to bring the agents online. Defaults to Groq, but works with OpenRouter or any OpenAI-compatible API.
+            </div>
+            <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:18}}>
+              <div>
+                <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:4}}>API KEY</label>
+                <input className="input" type="password" placeholder="sk-..." value={apiKey} onChange={e=>setApiKey(e.target.value)} />
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                <div>
+                  <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:4}}>BASE URL</label>
+                  <input className="input" value={baseUrl} onChange={e=>setBaseUrl(e.target.value)} />
+                </div>
+                <div>
+                  <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:4}}>MODEL</label>
+                  <input className="input" value={model} onChange={e=>setModel(e.target.value)} />
+                </div>
+              </div>
+            </div>
+            <div style={{display:"flex",gap:8}}>
+              <button className="btn btn-a" onClick={saveApiConfig} disabled={!apiKey.trim()} style={{flex:1,justifyContent:"center"}}>CONNECT AGENTS</button>
+              <button className="btn btn-g" onClick={()=>setShowApiPopup(false)}>SKIP FOR NOW</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
