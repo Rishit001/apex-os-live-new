@@ -640,24 +640,7 @@ function Settings({cfg, setCfg, notify}) {
         <div style={{fontSize:10,color:"var(--t2)",marginTop:10}}>Works with Groq, OpenRouter, OpenAI, or any compatible endpoint.</div>
       </div>
 
-      <div className="card" style={{padding:20,marginBottom:16}}>
-        <div style={{fontSize:13,fontWeight:600,fontFamily:"var(--fd)",marginBottom:14}}>Known Limitations & Workarounds</div>
-        {[
-          {limit:"Content Tracker stats are static",fix:"Connect Instagram Graph API + YouTube Data API v3 for live data. FORGE can generate the integration code.",status:"amber"},
-          {limit:"Agent memory resets between browser sessions",fix:"Currently mitigated with storage persistence. Full fix: Supabase vector memory layer. FORGE can build this.",status:"amber"},
-          {limit:"Agents can't communicate with each other",fix:"True multi-agent orchestration requires a backend relay. Workaround: Use APEX chat to manually chain tasks.",status:"red"},
-          {limit:"No real competitor scraping",fix:"ORACLE generates analysis based on your input. Real scraping needs Apify or ScrapingBee integration.",status:"red"},
-          {limit:"Sales metrics are placeholders",fix:"Connect your CRM (GHL, HubSpot) via FORGE's API integration workflow for live pipeline data.",status:"amber"},
-        ].map((item,i)=>(
-          <div key={i} style={{display:"flex",gap:12,padding:"10px 0",borderBottom:i<4?"1px solid var(--b1)":undefined,alignItems:"flex-start"}}>
-            <span className={`tag ${item.status==="red"?"tred":"tamb"}`} style={{flexShrink:0,marginTop:2}}>{item.status==="red"?"KNOWN":"PARTIAL"}</span>
-            <div>
-              <div style={{fontSize:12,fontWeight:600,marginBottom:3}}>{item.limit}</div>
-              <div style={{fontSize:12,color:"var(--t2)"}}>Fix: {item.fix}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+     
 
       {/* Danger Zone */}
       <div className="card" style={{padding:20,marginBottom:16,borderTop:"2px solid var(--red)"}}>
