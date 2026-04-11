@@ -8,10 +8,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 // ─────────────────────────────────────────────────────────────────────────────
 const makeCSS = (accent) => {
   // Convert hex to rgb for rgba() usage
-  const hex = accent.replace('#','');
-  const r = parseInt(hex.substring(0,2),16);
-  const g = parseInt(hex.substring(2,4),16);
-  const b = parseInt(hex.substring(4,6),16);
+  const hex = accent.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
   const a1 = `rgba(${r},${g},${b},0.1)`;
   const a2 = `rgba(${r},${g},${b},0.22)`;
   const a3 = `rgba(${r},${g},${b},0.4)`;
@@ -83,13 +83,13 @@ const DEFAULT_CONFIG = {
   tagline: "AI Operating System",
   accentColor: "#E8B84B",
   agents: {
-    APEX:   { name:"APEX",   role:"Commander / COO",    icon:"◈", color:"#E8B84B" },
-    ORACLE: { name:"ORACLE", role:"Research & Intel",   icon:"◉", color:"#B388FF" },
-    PULSE:  { name:"PULSE",  role:"Content Director",   icon:"◎", color:"#FF9800" },
-    CIPHER: { name:"CIPHER", role:"Sales & Revenue",    icon:"◆", color:"#FF3B3B" },
-    FORGE:  { name:"FORGE",  role:"Developer",          icon:"⬡", color:"#00E5FF" },
-    VAULT:  { name:"VAULT",  role:"Finance & Security", icon:"▣", color:"#00E676" },
-    ECHO:   { name:"ECHO",   role:"Client Success",     icon:"◇", color:"#FF6D00" },
+    APEX: { name: "APEX", role: "Commander / COO", icon: "◈", color: "#E8B84B" },
+    ORACLE: { name: "ORACLE", role: "Research & Intel", icon: "◉", color: "#B388FF" },
+    PULSE: { name: "PULSE", role: "Content Director", icon: "◎", color: "#FF9800" },
+    CIPHER: { name: "CIPHER", role: "Sales & Revenue", icon: "◆", color: "#FF3B3B" },
+    FORGE: { name: "FORGE", role: "Developer", icon: "⬡", color: "#00E5FF" },
+    VAULT: { name: "VAULT", role: "Finance & Security", icon: "▣", color: "#00E676" },
+    ECHO: { name: "ECHO", role: "Client Success", icon: "◇", color: "#FF6D00" },
   }
 };
 
@@ -100,13 +100,13 @@ const getSysPrompt = (agentId, cfg) => {
   const a = cfg.agents[agentId];
   const brand = cfg.brandName;
   const prompts = {
-    APEX:   `You are ${a.name}, the Commander and COO of ${brand}'s AI operating system. You orchestrate all agents, execute strategy, and turn vision into action. Think in systems. Speak decisively. Structure responses with clear headers and numbered steps. Be direct and action-oriented.`,
+    APEX: `You are ${a.name}, the Commander and COO of ${brand}'s AI operating system. You orchestrate all agents, execute strategy, and turn vision into action. Think in systems. Speak decisively. Structure responses with clear headers and numbered steps. Be direct and action-oriented.`,
     ORACLE: `You are ${a.name}, the Research & Intelligence agent for ${brand}. You analyze markets, competitors, content trends, and surface actionable intel. Speak in data. Flag speculation. Use bullet points and specific numbers.`,
-    PULSE:  `You are ${a.name}, the Content Director for ${brand}. You write Instagram Reels scripts, YouTube scripts, hooks, captions. Write in the founder's raw, authentic voice — real talk, no fluff. Format scripts as: HOOK | BODY | CTA. Give 3 variations for Reels.`,
+    PULSE: `You are ${a.name}, the Content Director for ${brand}. You write Instagram Reels scripts, YouTube scripts, hooks, captions. Write in the founder's raw, authentic voice — real talk, no fluff. Format scripts as: HOOK | BODY | CTA. Give 3 variations for Reels.`,
     CIPHER: `You are ${a.name}, the Sales & Revenue agent for ${brand}. You handle sales copy, VSLs, DM sequences, objection handling, CRM strategy. Your copy converts. Be direct, benefit-driven, psychologically sharp.`,
-    FORGE:  `You are ${a.name}, the Developer agent for ${brand}. You build n8n workflows, APIs, Supabase databases, automations. Speak in code. Give actual steps, pseudocode, or real code blocks. Be technical and precise.`,
-    VAULT:  `You are ${a.name}, the Finance & Security agent for ${brand}. Track costs, optimize budgets, forecast revenue. Think in ROI. Quantify everything. Use tables for financial data.`,
-    ECHO:   `You are ${a.name}, the Client Success agent for ${brand}. Handle onboarding, community management, client health, retention. Be proactive and solutions-focused. Create templates and sequences that make clients love you.`,
+    FORGE: `You are ${a.name}, the Developer agent for ${brand}. You build n8n workflows, APIs, Supabase databases, automations. Speak in code. Give actual steps, pseudocode, or real code blocks. Be technical and precise.`,
+    VAULT: `You are ${a.name}, the Finance & Security agent for ${brand}. Track costs, optimize budgets, forecast revenue. Think in ROI. Quantify everything. Use tables for financial data.`,
+    ECHO: `You are ${a.name}, the Client Success agent for ${brand}. Handle onboarding, community management, client health, retention. Be proactive and solutions-focused. Create templates and sequences that make clients love you.`,
   };
   return prompts[agentId] || prompts.APEX;
 };
@@ -115,36 +115,36 @@ const getSysPrompt = (agentId, cfg) => {
 // DEFAULT DATA
 // ─────────────────────────────────────────────────────────────────────────────
 const DEFAULT_TASKS = [
-  { id:"t1", title:"Weekly Competitor Scrape",        agent:"ORACLE", status:"in_progress", priority:"high",   created:"2026-03-01", desc:"Scrape top 10 competitor IG & YT for hooks and content patterns." },
-  { id:"t2", title:"Token Cost Tracking Setup",       agent:"VAULT",  status:"in_progress", priority:"medium", created:"2026-03-01", desc:"Implement daily token cost tracking across all agents." },
-  { id:"t3", title:"Discord Client Onboarding Flow",  agent:"ECHO",   status:"in_progress", priority:"high",   created:"2026-03-01", desc:"Build automated onboarding sequence for new clients." },
-  { id:"t4", title:"Supabase Agent Memory Layer",     agent:"FORGE",  status:"in_progress", priority:"high",   created:"2026-03-01", desc:"Migrate agent memory to Supabase for cross-session persistence." },
-  { id:"t5", title:"Nola Party Barges — Sales Copy",  agent:"CIPHER", status:"completed",   priority:"high",   created:"2026-02-19", desc:"Full 7-page sales copy rewrite." },
-  { id:"t6", title:"Q2 Content Strategy Document",    agent:"PULSE",  status:"backlog",     priority:"medium", created:"2026-03-02", desc:"Full Q2 strategy: pillars, formats, 90-day calendar." },
-  { id:"t7", title:"Sales Call Analysis — Feb Batch", agent:"ORACLE", status:"backlog",     priority:"medium", created:"2026-03-02", desc:"Analyze Feb calls for objection patterns and close rate leaks." },
+  { id: "t1", title: "Weekly Competitor Scrape", agent: "ORACLE", status: "in_progress", priority: "high", created: "2026-03-01", desc: "Scrape top 10 competitor IG & YT for hooks and content patterns." },
+  { id: "t2", title: "Token Cost Tracking Setup", agent: "VAULT", status: "in_progress", priority: "medium", created: "2026-03-01", desc: "Implement daily token cost tracking across all agents." },
+  { id: "t3", title: "Discord Client Onboarding Flow", agent: "ECHO", status: "in_progress", priority: "high", created: "2026-03-01", desc: "Build automated onboarding sequence for new clients." },
+  { id: "t4", title: "Supabase Agent Memory Layer", agent: "FORGE", status: "in_progress", priority: "high", created: "2026-03-01", desc: "Migrate agent memory to Supabase for cross-session persistence." },
+  { id: "t5", title: "Nola Party Barges — Sales Copy", agent: "CIPHER", status: "completed", priority: "high", created: "2026-02-19", desc: "Full 7-page sales copy rewrite." },
+  { id: "t6", title: "Q2 Content Strategy Document", agent: "PULSE", status: "backlog", priority: "medium", created: "2026-03-02", desc: "Full Q2 strategy: pillars, formats, 90-day calendar." },
+  { id: "t7", title: "Sales Call Analysis — Feb Batch", agent: "ORACLE", status: "backlog", priority: "medium", created: "2026-03-02", desc: "Analyze Feb calls for objection patterns and close rate leaks." },
 ];
 const DEFAULT_SOPS = [
-  { id:"s1", title:"Content Creation Pipeline",     agent:"PULSE",  cat:"content",    sections:["Overview","Research (5-10 min)","Hook Writing","Script Draft","Production","Publish"] },
-  { id:"s2", title:"Sales Follow-Up Sequence",      agent:"CIPHER", cat:"sales",      sections:["Lead Stages","Day 1","Day 3","Day 7","Day 14","Final"] },
-  { id:"s3", title:"Competitor Scraping Protocol",  agent:"ORACLE", cat:"research",   sections:["Setup","YouTube Scraping","Instagram Scraping","Analysis","Weekly Report"] },
-  { id:"s4", title:"Client Onboarding (4-Month)",   agent:"ECHO",   cat:"clients",    sections:["Day 1 Setup","Kick-off Call","Discord Access","Week 1","30-Day Review","Monthly"] },
-  { id:"s5", title:"Quiz Funnel Build",             agent:"FORGE",  cat:"dev",        sections:["Tech Stack","File Structure","Pages & Flow","Integration","Go-Live"] },
-  { id:"s6", title:"Objection → Content Pipeline", agent:"PULSE",  cat:"content",    sections:["Concept","Objection Library","Template","Hook Formula","Distribution"] },
-  { id:"s7", title:"Weekly Report Generation",      agent:"APEX",   cat:"operations", sections:["Data Collection","Agent Summaries","KPI Review","Wins","Next Week Plan"] },
-  { id:"s8", title:"Client Win → Case Study",       agent:"PULSE",  cat:"content",    sections:["Trigger Criteria","Interview Template","Story Structure","Formats","Distribution"] },
+  { id: "s1", title: "Content Creation Pipeline", agent: "PULSE", cat: "content", sections: ["Overview", "Research (5-10 min)", "Hook Writing", "Script Draft", "Production", "Publish"] },
+  { id: "s2", title: "Sales Follow-Up Sequence", agent: "CIPHER", cat: "sales", sections: ["Lead Stages", "Day 1", "Day 3", "Day 7", "Day 14", "Final"] },
+  { id: "s3", title: "Competitor Scraping Protocol", agent: "ORACLE", cat: "research", sections: ["Setup", "YouTube Scraping", "Instagram Scraping", "Analysis", "Weekly Report"] },
+  { id: "s4", title: "Client Onboarding (4-Month)", agent: "ECHO", cat: "clients", sections: ["Day 1 Setup", "Kick-off Call", "Discord Access", "Week 1", "30-Day Review", "Monthly"] },
+  { id: "s5", title: "Quiz Funnel Build", agent: "FORGE", cat: "dev", sections: ["Tech Stack", "File Structure", "Pages & Flow", "Integration", "Go-Live"] },
+  { id: "s6", title: "Objection → Content Pipeline", agent: "PULSE", cat: "content", sections: ["Concept", "Objection Library", "Template", "Hook Formula", "Distribution"] },
+  { id: "s7", title: "Weekly Report Generation", agent: "APEX", cat: "operations", sections: ["Data Collection", "Agent Summaries", "KPI Review", "Wins", "Next Week Plan"] },
+  { id: "s8", title: "Client Win → Case Study", agent: "PULSE", cat: "content", sections: ["Trigger Criteria", "Interview Template", "Story Structure", "Formats", "Distribution"] },
 ];
 const DEFAULT_SKILLS = [
-  { id:"sk1", agent:"FORGE",  title:"Dashboard Development",    desc:"Build and maintain the operating system dashboard.", tags:["react","supabase","api","deploy"], runs:4 },
-  { id:"sk2", agent:"FORGE",  title:"Workflow Automation",      desc:"n8n workflows, webhooks, API integrations.",         tags:["n8n","webhooks","automation"],      runs:2 },
-  { id:"sk3", agent:"ECHO",   title:"Client Onboarding",        desc:"4-month install process execution.",                 tags:["onboarding","discord","support"],   runs:7 },
-  { id:"sk4", agent:"CIPHER", title:"DM Sequences",             desc:"Personalized DM follow-up campaigns.",               tags:["dms","follow-up","sales"],          runs:12 },
-  { id:"sk5", agent:"CIPHER", title:"Objection Handling",       desc:"Word-for-word objection response library.",          tags:["objections","scripts","closing"],   runs:9 },
-  { id:"sk6", agent:"CIPHER", title:"VSL & Sales Copy",         desc:"Video sales letters and landing page copy.",         tags:["vsl","copywriting","landing"],      runs:5 },
-  { id:"sk7", agent:"ORACLE", title:"Competitor Analysis",      desc:"Deep competitor intel and content benchmarking.",    tags:["research","scraping","benchmarks"], runs:8 },
-  { id:"sk8", agent:"PULSE",  title:"Reel Script Generator",    desc:"Instagram Reels: hook, body, CTA — 3 variations.",   tags:["reels","hooks","instagram"],        runs:23 },
-  { id:"sk9", agent:"PULSE",  title:"YouTube Script Writing",   desc:"Full YouTube scripts with narrative structure.",     tags:["youtube","scripts","narrative"],    runs:11 },
-  { id:"sk10",agent:"VAULT",  title:"Cost Optimization Report", desc:"Token usage analysis and cost reduction strategies.", tags:["costs","tokens","ROI"],             runs:3 },
-  { id:"sk11",agent:"APEX",   title:"Strategic Planning",       desc:"90-day strategic plans and OKR frameworks.",         tags:["strategy","okr","planning"],        runs:6 },
+  { id: "sk1", agent: "FORGE", title: "Dashboard Development", desc: "Build and maintain the operating system dashboard.", tags: ["react", "supabase", "api", "deploy"], runs: 4 },
+  { id: "sk2", agent: "FORGE", title: "Workflow Automation", desc: "n8n workflows, webhooks, API integrations.", tags: ["n8n", "webhooks", "automation"], runs: 2 },
+  { id: "sk3", agent: "ECHO", title: "Client Onboarding", desc: "4-month install process execution.", tags: ["onboarding", "discord", "support"], runs: 7 },
+  { id: "sk4", agent: "CIPHER", title: "DM Sequences", desc: "Personalized DM follow-up campaigns.", tags: ["dms", "follow-up", "sales"], runs: 12 },
+  { id: "sk5", agent: "CIPHER", title: "Objection Handling", desc: "Word-for-word objection response library.", tags: ["objections", "scripts", "closing"], runs: 9 },
+  { id: "sk6", agent: "CIPHER", title: "VSL & Sales Copy", desc: "Video sales letters and landing page copy.", tags: ["vsl", "copywriting", "landing"], runs: 5 },
+  { id: "sk7", agent: "ORACLE", title: "Competitor Analysis", desc: "Deep competitor intel and content benchmarking.", tags: ["research", "scraping", "benchmarks"], runs: 8 },
+  { id: "sk8", agent: "PULSE", title: "Reel Script Generator", desc: "Instagram Reels: hook, body, CTA — 3 variations.", tags: ["reels", "hooks", "instagram"], runs: 23 },
+  { id: "sk9", agent: "PULSE", title: "YouTube Script Writing", desc: "Full YouTube scripts with narrative structure.", tags: ["youtube", "scripts", "narrative"], runs: 11 },
+  { id: "sk10", agent: "VAULT", title: "Cost Optimization Report", desc: "Token usage analysis and cost reduction strategies.", tags: ["costs", "tokens", "ROI"], runs: 3 },
+  { id: "sk11", agent: "APEX", title: "Strategic Planning", desc: "90-day strategic plans and OKR frameworks.", tags: ["strategy", "okr", "planning"], runs: 6 },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -172,7 +172,7 @@ async function sGet(key, fallback) {
       const r = window.localStorage.getItem(key);
       if (r !== null) return JSON.parse(r);
     }
-  } catch {}
+  } catch { }
   return fallback;
 }
 
@@ -193,7 +193,7 @@ async function sSet(key, val) {
         window.localStorage.setItem(key, JSON.stringify(val));
       }
     }
-  } catch {}
+  } catch { }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -227,7 +227,7 @@ async function claude(system, messages) {
       ]
     })
   });
-  
+
   const d = await res.json();
   if (!res.ok) throw new Error(`API Error: ${d?.error?.message || 'Unknown error'}`);
   return d.choices[0].message.content || "";
@@ -235,66 +235,66 @@ async function claude(system, messages) {
 // ─────────────────────────────────────────────────────────────────────────────
 // SMALL COMPONENTS
 // ─────────────────────────────────────────────────────────────────────────────
-function Avatar({ id, size=32, dot=false, level=false, cfg }) {
+function Avatar({ id, size = 32, dot = false, level = false, cfg }) {
   const a = cfg?.agents?.[id];
-  const LV_MAP = {APEX:12, ORACLE:9, PULSE:11, CIPHER:10, FORGE:13, VAULT:8, ECHO:7};
+  const LV_MAP = { APEX: 12, ORACLE: 9, PULSE: 11, CIPHER: 10, FORGE: 13, VAULT: 8, ECHO: 7 };
   if (!a) return null;
   return (
-    <div style={{position:"relative",display:"inline-flex",flexShrink:0}}>
+    <div style={{ position: "relative", display: "inline-flex", flexShrink: 0 }}>
       <div style={{
-        width:size, height:size, borderRadius:"50%",
-        background:`${a.color}18`, border:`2px solid ${a.color}50`,
-        display:"flex", alignItems:"center", justifyContent:"center",
-        fontSize:size*.38, fontFamily:"var(--fd)", fontWeight:800, color:a.color,
-        boxShadow:`0 0 ${size*.25}px ${a.color}20`,
+        width: size, height: size, borderRadius: "50%",
+        background: `${a.color}18`, border: `2px solid ${a.color}50`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: size * .38, fontFamily: "var(--fd)", fontWeight: 800, color: a.color,
+        boxShadow: `0 0 ${size * .25}px ${a.color}20`,
       }}>{a.icon}</div>
-      {dot && <div style={{position:"absolute",bottom:0,right:0,width:9,height:9,borderRadius:"50%",background:"var(--green)",border:"2px solid var(--bg)",boxShadow:"0 0 6px var(--green)"}}/>}
-      {level && <div style={{position:"absolute",top:-4,right:-4,background:a.color,color:"#05070D",fontSize:8,fontFamily:"var(--fm)",fontWeight:700,padding:"1px 4px",borderRadius:3,lineHeight:1.4}}>L{LV_MAP[id]??9}</div>}
+      {dot && <div style={{ position: "absolute", bottom: 0, right: 0, width: 9, height: 9, borderRadius: "50%", background: "var(--green)", border: "2px solid var(--bg)", boxShadow: "0 0 6px var(--green)" }} />}
+      {level && <div style={{ position: "absolute", top: -4, right: -4, background: a.color, color: "#05070D", fontSize: 8, fontFamily: "var(--fm)", fontWeight: 700, padding: "1px 4px", borderRadius: 3, lineHeight: 1.4 }}>L{LV_MAP[id] ?? 9}</div>}
     </div>
   );
 }
 
-function Spin({color="var(--a)"}) {
-  return <div style={{width:14,height:14,border:`2px solid ${color}30`,borderTopColor:color,borderRadius:"50%",animation:"spin .7s linear infinite"}}/>;
+function Spin({ color = "var(--a)" }) {
+  return <div style={{ width: 14, height: 14, border: `2px solid ${color}30`, borderTopColor: color, borderRadius: "50%", animation: "spin .7s linear infinite" }} />;
 }
 
-function Notif({msg, onClose}) {
-  useEffect(()=>{ const t=setTimeout(onClose,4000); return ()=>clearTimeout(t); },[]);
+function Notif({ msg, onClose }) {
+  useEffect(() => { const t = setTimeout(onClose, 4000); return () => clearTimeout(t); }, []);
   return (
     <div className="notif">
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12}}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
         <div>
-          <div style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--a)",letterSpacing:".1em",marginBottom:3}}>APEX OS</div>
-          <div style={{fontSize:13}}>{msg}</div>
+          <div style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--a)", letterSpacing: ".1em", marginBottom: 3 }}>APEX OS</div>
+          <div style={{ fontSize: 13 }}>{msg}</div>
         </div>
-        <button onClick={onClose} style={{background:"none",border:"none",color:"var(--t3)",cursor:"pointer",fontSize:16,lineHeight:1}}>×</button>
+        <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--t3)", cursor: "pointer", fontSize: 16, lineHeight: 1 }}>×</button>
       </div>
     </div>
   );
 }
 
-function SH({children, right}) {
+function SH({ children, right }) {
   return (
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
       <span className="sh">{children}</span>
       {right}
     </div>
   );
 }
 
-function XPBar({id, cfg}) {
-  const XP_MAP = {APEX:78, ORACLE:55, PULSE:92, CIPHER:67, FORGE:44, VAULT:30, ECHO:61};
-  const LV_MAP = {APEX:12, ORACLE:9,  PULSE:11, CIPHER:10, FORGE:13, VAULT:8,  ECHO:7};
+function XPBar({ id, cfg }) {
+  const XP_MAP = { APEX: 78, ORACLE: 55, PULSE: 92, CIPHER: 67, FORGE: 44, VAULT: 30, ECHO: 61 };
+  const LV_MAP = { APEX: 12, ORACLE: 9, PULSE: 11, CIPHER: 10, FORGE: 13, VAULT: 8, ECHO: 7 };
   const xp = XP_MAP[id] ?? 50;
   const lv = LV_MAP[id] ?? 9;
   const a = cfg?.agents?.[id];
   return (
     <div>
-      <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-        <span style={{fontSize:9,fontFamily:"var(--fm)",color:"var(--t3)"}}>LV {lv}</span>
-        <span style={{fontSize:9,fontFamily:"var(--fm)",color:a?.color}}>{xp}%</span>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+        <span style={{ fontSize: 9, fontFamily: "var(--fm)", color: "var(--t3)" }}>LV {lv}</span>
+        <span style={{ fontSize: 9, fontFamily: "var(--fm)", color: a?.color }}>{xp}%</span>
       </div>
-      <div className="xpt"><div className="xpf" style={{width:`${xp}%`,background:`linear-gradient(90deg,${a?.color}70,${a?.color})`}}/></div>
+      <div className="xpt"><div className="xpf" style={{ width: `${xp}%`, background: `linear-gradient(90deg,${a?.color}70,${a?.color})` }} /></div>
     </div>
   );
 }
@@ -302,63 +302,63 @@ function XPBar({id, cfg}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // ONBOARDING
 // ─────────────────────────────────────────────────────────────────────────────
-function Onboarding({onComplete}) {
+function Onboarding({ onComplete }) {
   const [step, setStep] = useState(0);
-  const [cfg, setCfg] = useState({ brandName:"", tagline:"AI Operating System", accentColor:"#E8B84B" });
+  const [cfg, setCfg] = useState({ brandName: "", tagline: "AI Operating System", accentColor: "#E8B84B" });
 
-  const colors = ["#E8B84B","#00E5FF","#00E676","#B388FF","#FF6D00","#FF3B3B","#FF9800"];
+  const colors = ["#E8B84B", "#00E5FF", "#00E676", "#B388FF", "#FF6D00", "#FF3B3B", "#FF9800"];
 
   const steps = [
     {
-      icon:"⌬", title:"Welcome to APEX OS",
-      body:"Your autonomous AI executive team. 7 agents running 24/7 — strategy, content, sales, dev, finance, and client success. All in one command center.",
+      icon: "⌬", title: "Welcome to APEX OS",
+      body: "Your autonomous AI executive team. 7 agents running 24/7 — strategy, content, sales, dev, finance, and client success. All in one command center.",
       content: null,
-      next:"Let's Set It Up →"
+      next: "Let's Set It Up →"
     },
     {
-      icon:"◈", title:"Brand Your OS",
-      body:"Make it yours. Enter your brand name to white-label the entire system.",
+      icon: "◈", title: "Brand Your OS",
+      body: "Make it yours. Enter your brand name to white-label the entire system.",
       content: (
-        <div style={{marginTop:20,display:"flex",flexDirection:"column",gap:14}}>
+        <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 14 }}>
           <div>
-            <label style={{fontSize:11,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:6}}>BRAND NAME</label>
-            <input className="input" placeholder="e.g. RAWGROWTH, NEXUS, EMPIRE..." value={cfg.brandName} onChange={e=>setCfg(p=>({...p,brandName:e.target.value}))} style={{fontSize:15}} autoFocus/>
+            <label style={{ fontSize: 11, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 6 }}>BRAND NAME</label>
+            <input className="input" placeholder="e.g. RAWGROWTH, NEXUS, EMPIRE..." value={cfg.brandName} onChange={e => setCfg(p => ({ ...p, brandName: e.target.value }))} style={{ fontSize: 15 }} autoFocus />
           </div>
           <div>
-            <label style={{fontSize:11,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:6}}>TAGLINE (optional)</label>
-            <input className="input" placeholder="e.g. AI Operating System" value={cfg.tagline} onChange={e=>setCfg(p=>({...p,tagline:e.target.value}))}/>
+            <label style={{ fontSize: 11, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 6 }}>TAGLINE (optional)</label>
+            <input className="input" placeholder="e.g. AI Operating System" value={cfg.tagline} onChange={e => setCfg(p => ({ ...p, tagline: e.target.value }))} />
           </div>
           <div>
-            <label style={{fontSize:11,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:8}}>ACCENT COLOR</label>
-            <div style={{display:"flex",gap:8}}>
-              {colors.map(c=>(
-                <div key={c} onClick={()=>setCfg(p=>({...p,accentColor:c}))} style={{
-                  width:28,height:28,borderRadius:"50%",background:c,cursor:"pointer",
-                  border:`2px solid ${cfg.accentColor===c?"white":"transparent"}`,
-                  boxShadow:cfg.accentColor===c?`0 0 12px ${c}`:undefined,
-                  transition:"all .15s"
-                }}/>
+            <label style={{ fontSize: 11, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 8 }}>ACCENT COLOR</label>
+            <div style={{ display: "flex", gap: 8 }}>
+              {colors.map(c => (
+                <div key={c} onClick={() => setCfg(p => ({ ...p, accentColor: c }))} style={{
+                  width: 28, height: 28, borderRadius: "50%", background: c, cursor: "pointer",
+                  border: `2px solid ${cfg.accentColor === c ? "white" : "transparent"}`,
+                  boxShadow: cfg.accentColor === c ? `0 0 12px ${c}` : undefined,
+                  transition: "all .15s"
+                }} />
               ))}
             </div>
           </div>
         </div>
       ),
-      next:"Continue →"
+      next: "Continue →"
     },
     {
-      icon:"◎", title:"Meet Your Team",
-      body:"7 specialized AI agents. Each one is a C-suite exec. Each one executes on command.",
+      icon: "◎", title: "Meet Your Team",
+      body: "7 specialized AI agents. Each one is a C-suite exec. Each one executes on command.",
       content: (
-        <div style={{marginTop:20,display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-          {Object.entries(DEFAULT_CONFIG.agents).map(([id,a])=>(
-            <div key={id} style={{padding:"10px 12px",background:"var(--s2)",border:`1px solid ${a.color}30`,borderRadius:"var(--r)",borderLeft:`3px solid ${a.color}`}}>
-              <div style={{fontSize:14,marginBottom:2}}>{a.icon} <span style={{fontFamily:"var(--fd)",fontWeight:700,fontSize:12,color:a.color}}>{a.name}</span></div>
-              <div style={{fontSize:11,color:"var(--t2)"}}>{a.role}</div>
+        <div style={{ marginTop: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          {Object.entries(DEFAULT_CONFIG.agents).map(([id, a]) => (
+            <div key={id} style={{ padding: "10px 12px", background: "var(--s2)", border: `1px solid ${a.color}30`, borderRadius: "var(--r)", borderLeft: `3px solid ${a.color}` }}>
+              <div style={{ fontSize: 14, marginBottom: 2 }}>{a.icon} <span style={{ fontFamily: "var(--fd)", fontWeight: 700, fontSize: 12, color: a.color }}>{a.name}</span></div>
+              <div style={{ fontSize: 11, color: "var(--t2)" }}>{a.role}</div>
             </div>
           ))}
         </div>
       ),
-      next:"Launch APEX OS →"
+      next: "Launch APEX OS →"
     }
   ];
 
@@ -366,32 +366,32 @@ function Onboarding({onComplete}) {
   const canNext = step !== 1 || cfg.brandName.trim().length > 0;
 
   const handleNext = () => {
-    if (step < steps.length - 1) { setStep(p=>p+1); }
-    else { onComplete({...DEFAULT_CONFIG, brandName:cfg.brandName||"MY BRAND", tagline:cfg.tagline, accentColor:cfg.accentColor}); }
+    if (step < steps.length - 1) { setStep(p => p + 1); }
+    else { onComplete({ ...DEFAULT_CONFIG, brandName: cfg.brandName || "MY BRAND", tagline: cfg.tagline, accentColor: cfg.accentColor }); }
   };
 
   return (
-    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20,position:"relative",zIndex:1}}>
-      <div style={{width:"100%",maxWidth:520}}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 20, position: "relative", zIndex: 1 }}>
+      <div style={{ width: "100%", maxWidth: 520 }}>
         {/* Steps indicator */}
-        <div style={{display:"flex",gap:6,justifyContent:"center",marginBottom:32}}>
-          {steps.map((_,i)=>(
-            <div key={i} style={{width:i===step?24:8,height:4,borderRadius:2,background:i<=step?"var(--a)":"var(--b2)",transition:"all .3s"}}/>
+        <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 32 }}>
+          {steps.map((_, i) => (
+            <div key={i} style={{ width: i === step ? 24 : 8, height: 4, borderRadius: 2, background: i <= step ? "var(--a)" : "var(--b2)", transition: "all .3s" }} />
           ))}
         </div>
 
-        <div className="card fu" style={{padding:32}}>
-          <div style={{textAlign:"center",marginBottom:20}}>
-            <div style={{fontSize:48,marginBottom:12,filter:"drop-shadow(0 0 20px var(--a))"}}>{s.icon}</div>
-            <h2 style={{fontFamily:"var(--fd)",fontSize:22,fontWeight:800,letterSpacing:"-.01em",marginBottom:8}}>{s.title}</h2>
-            <p style={{color:"var(--t2)",fontSize:14,lineHeight:1.6}}>{s.body}</p>
+        <div className="card fu" style={{ padding: 32 }}>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ fontSize: 48, marginBottom: 12, filter: "drop-shadow(0 0 20px var(--a))" }}>{s.icon}</div>
+            <h2 style={{ fontFamily: "var(--fd)", fontSize: 22, fontWeight: 800, letterSpacing: "-.01em", marginBottom: 8 }}>{s.title}</h2>
+            <p style={{ color: "var(--t2)", fontSize: 14, lineHeight: 1.6 }}>{s.body}</p>
           </div>
           {s.content}
           <button className="btn btn-a fu" onClick={handleNext} disabled={!canNext}
-            style={{width:"100%",justifyContent:"center",padding:"12px",marginTop:24,fontSize:13}}>
+            style={{ width: "100%", justifyContent: "center", padding: "12px", marginTop: 24, fontSize: 13 }}>
             {s.next}
           </button>
-          {step > 0 && <button onClick={()=>setStep(p=>p-1)} style={{width:"100%",background:"none",border:"none",color:"var(--t3)",cursor:"pointer",fontSize:12,fontFamily:"var(--fm)",marginTop:10,padding:"6px"}}>← Back</button>}
+          {step > 0 && <button onClick={() => setStep(p => p - 1)} style={{ width: "100%", background: "none", border: "none", color: "var(--t3)", cursor: "pointer", fontSize: 12, fontFamily: "var(--fm)", marginTop: 10, padding: "6px" }}>← Back</button>}
         </div>
       </div>
     </div>
@@ -401,40 +401,40 @@ function Onboarding({onComplete}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // TOPBAR
 // ─────────────────────────────────────────────────────────────────────────────
-function TopBar({cfg, liveCount}) {
-  const [t,setT] = useState(new Date());
-  useEffect(()=>{ const i=setInterval(()=>setT(new Date()),1000); return ()=>clearInterval(i); },[]);
+function TopBar({ cfg, liveCount }) {
+  const [t, setT] = useState(new Date());
+  useEffect(() => { const i = setInterval(() => setT(new Date()), 1000); return () => clearInterval(i); }, []);
   const ticks = [`${cfg.brandName} // ${cfg.tagline.toUpperCase()}`, "ALL AGENTS ONLINE", "7 AGENTS — 24/7 OPERATION", "AUTONOMOUS EXECUTIVE TEAM ACTIVE", "MISSION: BUILD. SELL. SCALE."];
   return (
     <div style={{
-      position:"fixed", top:0, left:"var(--sidebar)", right:0,
-      height:"var(--topbar)", zIndex:200,
-      background:"#0C0F1C",
-      borderBottom:"1px solid #252840",
-      borderLeft:"1px solid #252840",
-      boxShadow:"0 2px 20px rgba(0,0,0,0.6)",
-      display:"flex", alignItems:"center", justifyContent:"space-between",
-      padding:"0 16px", overflow:"hidden",
+      position: "fixed", top: 0, left: "var(--sidebar)", right: 0,
+      height: "var(--topbar)", zIndex: 200,
+      background: "#0C0F1C",
+      borderBottom: "1px solid #252840",
+      borderLeft: "1px solid #252840",
+      boxShadow: "0 2px 20px rgba(0,0,0,0.6)",
+      display: "flex", alignItems: "center", justifyContent: "space-between",
+      padding: "0 16px", overflow: "hidden",
     }}>
       {/* Accent top line */}
-      <div style={{position:"absolute",top:0,left:0,right:0,height:"2px",background:`linear-gradient(90deg,${cfg.accentColor},transparent 55%)`}}/>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: `linear-gradient(90deg,${cfg.accentColor},transparent 55%)` }} />
       {/* Ticker */}
-      <div style={{flex:1,overflow:"hidden",maskImage:"linear-gradient(90deg,transparent,black 3%,black 97%,transparent)"}}>
-        <div style={{display:"flex",gap:48,animation:"ticker 28s linear infinite",whiteSpace:"nowrap",width:"max-content"}}>
-          {[...ticks,...ticks].map((tick,i)=>(
-            <span key={i} style={{fontSize:10,fontFamily:"var(--fm)",color:"#7B82A0",letterSpacing:".1em"}}>
-              <span style={{color:cfg.accentColor,marginRight:10}}>▸</span>{tick}
+      <div style={{ flex: 1, overflow: "hidden", maskImage: "linear-gradient(90deg,transparent,black 3%,black 97%,transparent)" }}>
+        <div style={{ display: "flex", gap: 48, animation: "ticker 28s linear infinite", whiteSpace: "nowrap", width: "max-content" }}>
+          {[...ticks, ...ticks].map((tick, i) => (
+            <span key={i} style={{ fontSize: 10, fontFamily: "var(--fm)", color: "#7B82A0", letterSpacing: ".1em" }}>
+              <span style={{ color: cfg.accentColor, marginRight: 10 }}>▸</span>{tick}
             </span>
           ))}
         </div>
       </div>
       {/* Right panel */}
-      <div style={{display:"flex",alignItems:"center",gap:16,flexShrink:0,marginLeft:16,paddingLeft:16,borderLeft:"1px solid #252840"}}>
-        <div style={{display:"flex",alignItems:"center",gap:6}}>
-          <div className="live"/>
-          <span style={{fontSize:10,fontFamily:"var(--fm)",color:"#00E676",fontWeight:500,letterSpacing:".04em"}}>{liveCount}/7 LIVE</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0, marginLeft: 16, paddingLeft: 16, borderLeft: "1px solid #252840" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div className="live" />
+          <span style={{ fontSize: 10, fontFamily: "var(--fm)", color: "#00E676", fontWeight: 500, letterSpacing: ".04em" }}>{liveCount}/7 LIVE</span>
         </div>
-        <span style={{fontSize:11,fontFamily:"var(--fm)",color:"#B0B8D0",fontWeight:500,letterSpacing:".05em"}}>{t.toLocaleTimeString("en-US",{hour12:false})}</span>
+        <span style={{ fontSize: 11, fontFamily: "var(--fm)", color: "#B0B8D0", fontWeight: 500, letterSpacing: ".05em" }}>{t.toLocaleTimeString("en-US", { hour12: false })}</span>
       </div>
     </div>
   );
@@ -444,71 +444,71 @@ function TopBar({cfg, liveCount}) {
 // SIDEBAR
 // ─────────────────────────────────────────────────────────────────────────────
 const NAV = [
-  {sec:"COMMAND",   items:[{id:"dashboard",label:"War Room"},{id:"chat",label:"Chat"},{id:"agents",label:"Agents"}]},
-  {sec:"CONTENT",   items:[{id:"instagram",label:"Instagram"},{id:"youtube",label:"YouTube"},{id:"pipeline",label:"Pipeline"}]},
-  {sec:"REVENUE",   items:[{id:"taskboard",label:"Task Board"},{id:"saleshub",label:"Sales Hub"},{id:"funnel",label:"Funnel"},{id:"calls",label:"Calls"}]},
-  {sec:"INTEL",     items:[{id:"skills",label:"Skills"},{id:"sops",label:"SOPs"},{id:"orgchart",label:"Org Chart"},{id:"report",label:"Weekly Report"}]},
-  {sec:"SYSTEM",    items:[{id:"settings",label:"Settings"}]},
+  { sec: "COMMAND", items: [{ id: "dashboard", label: "War Room" }, { id: "chat", label: "Chat" }, { id: "agents", label: "Agents" }] },
+  { sec: "CONTENT", items: [{ id: "instagram", label: "Instagram" }, { id: "youtube", label: "YouTube" }, { id: "pipeline", label: "Pipeline" }] },
+  { sec: "REVENUE", items: [{ id: "taskboard", label: "Task Board" }, { id: "saleshub", label: "Sales Hub" }, { id: "funnel", label: "Funnel" }, { id: "calls", label: "Calls" }] },
+  { sec: "INTEL", items: [{ id: "skills", label: "Skills" }, { id: "sops", label: "SOPs" }, { id: "orgchart", label: "Org Chart" }, { id: "report", label: "Weekly Report" }] },
+  { sec: "SYSTEM", items: [{ id: "settings", label: "Settings" }] },
 ];
 
-function Sidebar({active, setActive, tasks, cfg}) {
+function Sidebar({ active, setActive, tasks, cfg }) {
   const agents = Object.values(cfg.agents);
   return (
-    <div style={{position:"fixed",left:0,top:0,bottom:0,width:"var(--sidebar)",zIndex:201,background:"#090C14",borderRight:"1px solid #1E2235",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+    <div style={{ position: "fixed", left: 0, top: 0, bottom: 0, width: "var(--sidebar)", zIndex: 201, background: "#090C14", borderRight: "1px solid #1E2235", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Logo zone — same height as topbar, always visible */}
       <div style={{
-        height:"var(--topbar)", flexShrink:0,
-        padding:"0 14px",
-        borderBottom:"1px solid #252840",
-        background:"#0B0E1A",
-        display:"flex", alignItems:"center", gap:10,
-        boxShadow:"0 2px 20px rgba(0,0,0,0.6)",
+        height: "var(--topbar)", flexShrink: 0,
+        padding: "0 14px",
+        borderBottom: "1px solid #252840",
+        background: "#0B0E1A",
+        display: "flex", alignItems: "center", gap: 10,
+        boxShadow: "0 2px 20px rgba(0,0,0,0.6)",
       }}>
         {/* Accent top line matching topbar */}
-        <div style={{position:"absolute",top:0,left:0,right:0,height:"2px",background:`linear-gradient(90deg,${cfg.accentColor},transparent 80%)`}}/>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: `linear-gradient(90deg,${cfg.accentColor},transparent 80%)` }} />
         <div style={{
-          width:30, height:30, borderRadius:6, flexShrink:0,
-          background:cfg.accentColor,
-          display:"flex", alignItems:"center", justifyContent:"center",
-          boxShadow:`0 0 14px ${cfg.accentColor}60`,
+          width: 30, height: 30, borderRadius: 6, flexShrink: 0,
+          background: cfg.accentColor,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: `0 0 14px ${cfg.accentColor}60`,
         }}>
-          <span style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:900,color:"#05070D"}}>⌬</span>
+          <span style={{ fontFamily: "var(--fd)", fontSize: 14, fontWeight: 900, color: "#05070D" }}>⌬</span>
         </div>
-        <div style={{overflow:"hidden",flex:1}}>
-          <div style={{fontFamily:"var(--fd)",fontSize:13,fontWeight:800,letterSpacing:".01em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",color:"#E8EAF2"}}>{cfg.brandName}</div>
-          <div style={{fontSize:8,fontFamily:"var(--fm)",color:"#3D4260",letterSpacing:".12em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{cfg.tagline.toUpperCase()}</div>
+        <div style={{ overflow: "hidden", flex: 1 }}>
+          <div style={{ fontFamily: "var(--fd)", fontSize: 13, fontWeight: 800, letterSpacing: ".01em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#E8EAF2" }}>{cfg.brandName}</div>
+          <div style={{ fontSize: 8, fontFamily: "var(--fm)", color: "#3D4260", letterSpacing: ".12em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{cfg.tagline.toUpperCase()}</div>
         </div>
       </div>
-      <div style={{flex:1,overflowY:"auto",padding:"8px 0"}}>
-        {NAV.map(g=>(
-          <div key={g.sec} style={{marginBottom:4}}>
-            <div style={{padding:"7px 14px 3px",fontSize:9,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".14em"}}>{g.sec}</div>
-            {g.items.map(item=>{
-              const on = active===item.id;
+      <div style={{ flex: 1, overflowY: "auto", padding: "8px 0" }}>
+        {NAV.map(g => (
+          <div key={g.sec} style={{ marginBottom: 4 }}>
+            <div style={{ padding: "7px 14px 3px", fontSize: 9, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".14em" }}>{g.sec}</div>
+            {g.items.map(item => {
+              const on = active === item.id;
               return (
-                <button key={item.id} onClick={()=>setActive(item.id)} style={{
-                  width:"100%",textAlign:"left",padding:"7px 14px",
-                  background:on?"var(--a1)":"transparent",
-                  color:on?"var(--a)":"var(--t2)",
-                  border:"none",borderLeft:`2px solid ${on?"var(--a)":"transparent"}`,
-                  cursor:"pointer",fontSize:12,fontFamily:"var(--fb)",fontWeight:on?600:400,
-                  transition:"all .12s",
+                <button key={item.id} onClick={() => setActive(item.id)} style={{
+                  width: "100%", textAlign: "left", padding: "7px 14px",
+                  background: on ? "var(--a1)" : "transparent",
+                  color: on ? "var(--a)" : "var(--t2)",
+                  border: "none", borderLeft: `2px solid ${on ? "var(--a)" : "transparent"}`,
+                  cursor: "pointer", fontSize: 12, fontFamily: "var(--fb)", fontWeight: on ? 600 : 400,
+                  transition: "all .12s",
                 }}>{item.label}</button>
               );
             })}
           </div>
         ))}
       </div>
-      <div style={{borderTop:"1px solid var(--b1)",padding:"8px 0",flexShrink:0}}>
-        <div style={{padding:"3px 14px 5px",fontSize:9,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".14em"}}>AGENTS</div>
-        {agents.map(a=>{
-          const t = tasks?.find(x=>x.agent===Object.keys(cfg.agents).find(k=>cfg.agents[k]===a)&&x.status==="in_progress");
+      <div style={{ borderTop: "1px solid var(--b1)", padding: "8px 0", flexShrink: 0 }}>
+        <div style={{ padding: "3px 14px 5px", fontSize: 9, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".14em" }}>AGENTS</div>
+        {agents.map(a => {
+          const t = tasks?.find(x => x.agent === Object.keys(cfg.agents).find(k => cfg.agents[k] === a) && x.status === "in_progress");
           return (
-            <div key={a.name} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 14px"}}>
-              <div style={{width:18,height:18,borderRadius:"50%",background:`${a.color}18`,border:`1.5px solid ${a.color}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:a.color,flexShrink:0}}>{a.icon}</div>
-              <div style={{overflow:"hidden",flex:1}}>
-                <div style={{fontSize:11,fontWeight:600,color:"var(--t1)",fontFamily:"var(--fd)"}}>{a.name}</div>
-                <div style={{fontSize:9,color:"var(--t3)",fontFamily:"var(--fm)",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{t?t.title.substring(0,20)+"...":"Standby"}</div>
+            <div key={a.name} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 14px" }}>
+              <div style={{ width: 18, height: 18, borderRadius: "50%", background: `${a.color}18`, border: `1.5px solid ${a.color}50`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: a.color, flexShrink: 0 }}>{a.icon}</div>
+              <div style={{ overflow: "hidden", flex: 1 }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "var(--t1)", fontFamily: "var(--fd)" }}>{a.name}</div>
+                <div style={{ fontSize: 9, color: "var(--t3)", fontFamily: "var(--fm)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t ? t.title.substring(0, 20) + "..." : "Standby"}</div>
               </div>
             </div>
           );
@@ -524,16 +524,16 @@ function Sidebar({active, setActive, tasks, cfg}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // SETTINGS
 // ─────────────────────────────────────────────────────────────────────────────
-function Settings({cfg, setCfg, notify}) {
+function Settings({ cfg, setCfg, notify }) {
   const [form, setForm] = useState(cfg);
-  
+
   // Omni-Router State
   const [apiKey, setApiKey] = useState("");
   const [baseUrl, setBaseUrl] = useState("https://api.groq.com/openai/v1");
   const [model, setModel] = useState("llama-3.3-70b-versatile");
-  
+
   const [confirmClear, setConfirmClear] = useState(null);
-  const colors = ["#E8B84B","#00E5FF","#00E676","#B388FF","#FF6D00","#FF3B3B","#FF9800","#EC4899"];
+  const colors = ["#E8B84B", "#00E5FF", "#00E676", "#B388FF", "#FF6D00", "#FF3B3B", "#FF9800", "#EC4899"];
 
   // Load saved API settings on mount
   useEffect(() => {
@@ -542,29 +542,29 @@ function Settings({cfg, setCfg, notify}) {
     sGet("llm_model", "llama-3.3-70b-versatile").then(setModel);
   }, []);
 
-  const save = () => { 
-    setCfg(form); 
-    sSet("apex_cfg", form); 
+  const save = () => {
+    setCfg(form);
+    sSet("apex_cfg", form);
     sSet("llm_api_key", apiKey.trim());
     sSet("llm_base_url", baseUrl.trim());
     sSet("llm_model", model.trim());
-    notify("Settings & API Config saved!"); 
+    notify("Settings & API Config saved!");
   };
-  
+
   const reset = () => { setForm(DEFAULT_CONFIG); setCfg(DEFAULT_CONFIG); sSet("apex_cfg", DEFAULT_CONFIG); notify("Reset to defaults."); };
 
   const CLEARABLE = [
-    {key:"apex_tasks_v3",      label:"Tasks",         desc:"All task board data"},
-    {key:"chat_v3",            label:"Chat History",  desc:"All conversations with every agent"},
-    {key:"apex_pipeline_v1",   label:"Pipeline",      desc:"All content pipeline items"},
-    {key:"apex_reports",       label:"Reports",       desc:"All saved weekly reports"},
-    {key:"apex_saleshub_hist", label:"Sales Hub",     desc:"Sales Hub generation history"},
-    {key:"apex_calls_v1",      label:"Calls",         desc:"All logged sales calls"},
-    {key:"apex_tracker_v1",    label:"Tracker Stats", desc:"Content tracker metrics"},
-    {key:"apex_funnel_metrics_v1",label:"Funnel",     desc:"Funnel stage metrics"},
+    { key: "apex_tasks_v3", label: "Tasks", desc: "All task board data" },
+    { key: "chat_v3", label: "Chat History", desc: "All conversations with every agent" },
+    { key: "apex_pipeline_v1", label: "Pipeline", desc: "All content pipeline items" },
+    { key: "apex_reports", label: "Reports", desc: "All saved weekly reports" },
+    { key: "apex_saleshub_hist", label: "Sales Hub", desc: "Sales Hub generation history" },
+    { key: "apex_calls_v1", label: "Calls", desc: "All logged sales calls" },
+    { key: "apex_tracker_v1", label: "Tracker Stats", desc: "Content tracker metrics" },
+    { key: "apex_funnel_metrics_v1", label: "Funnel", desc: "Funnel stage metrics" },
   ];
 
-  const doClear = async(item) => {
+  const doClear = async (item) => {
     await sSet(item.key, null);
     setConfirmClear(null);
     notify(`${item.label} data cleared.`);
@@ -572,48 +572,48 @@ function Settings({cfg, setCfg, notify}) {
 
   return (
     <div className="fu">
-      <div style={{marginBottom:24}}>
-        <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Settings</h1>
-        <p style={{color:"var(--t2)",fontSize:13}}>White-label your OS, configure agents, customize the experience.</p>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Settings</h1>
+        <p style={{ color: "var(--t2)", fontSize: 13 }}>White-label your OS, configure agents, customize the experience.</p>
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:16}}>
-        <div className="card" style={{padding:20}}>
-          <div style={{fontSize:13,fontWeight:600,fontFamily:"var(--fd)",marginBottom:14}}>Brand Identity</div>
-          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+        <div className="card" style={{ padding: 20 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "var(--fd)", marginBottom: 14 }}>Brand Identity</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div>
-              <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>BRAND NAME</label>
-              <input className="input" value={form.brandName} onChange={e=>setForm(p=>({...p,brandName:e.target.value}))} placeholder="Your brand name"/>
+              <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>BRAND NAME</label>
+              <input className="input" value={form.brandName} onChange={e => setForm(p => ({ ...p, brandName: e.target.value }))} placeholder="Your brand name" />
             </div>
             <div>
-              <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>TAGLINE</label>
-              <input className="input" value={form.tagline} onChange={e=>setForm(p=>({...p,tagline:e.target.value}))} placeholder="AI Operating System"/>
+              <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>TAGLINE</label>
+              <input className="input" value={form.tagline} onChange={e => setForm(p => ({ ...p, tagline: e.target.value }))} placeholder="AI Operating System" />
             </div>
             <div>
-              <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:8}}>ACCENT COLOR</label>
-              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-                {colors.map(c=>(
-                  <div key={c} onClick={()=>setForm(p=>({...p,accentColor:c}))} style={{
-                    width:28,height:28,borderRadius:"50%",background:c,cursor:"pointer",
-                    border:`2px solid ${form.accentColor===c?"white":"transparent"}`,
-                    boxShadow:form.accentColor===c?`0 0 10px ${c}`:undefined,transition:"all .14s"
-                  }}/>
+              <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 8 }}>ACCENT COLOR</label>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {colors.map(c => (
+                  <div key={c} onClick={() => setForm(p => ({ ...p, accentColor: c }))} style={{
+                    width: 28, height: 28, borderRadius: "50%", background: c, cursor: "pointer",
+                    border: `2px solid ${form.accentColor === c ? "white" : "transparent"}`,
+                    boxShadow: form.accentColor === c ? `0 0 10px ${c}` : undefined, transition: "all .14s"
+                  }} />
                 ))}
-                <input type="color" value={form.accentColor} onChange={e=>setForm(p=>({...p,accentColor:e.target.value}))}
-                  style={{width:28,height:28,borderRadius:"50%",border:"none",background:"none",cursor:"pointer",padding:0}}/>
+                <input type="color" value={form.accentColor} onChange={e => setForm(p => ({ ...p, accentColor: e.target.value }))}
+                  style={{ width: 28, height: 28, borderRadius: "50%", border: "none", background: "none", cursor: "pointer", padding: 0 }} />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="card" style={{padding:20}}>
-          <div style={{fontSize:13,fontWeight:600,fontFamily:"var(--fd)",marginBottom:14}}>Agent Names</div>
-          <div style={{display:"flex",flexDirection:"column",gap:8}}>
-            {Object.entries(form.agents).map(([id,a])=>(
-              <div key={id} style={{display:"flex",alignItems:"center",gap:8}}>
-                <div style={{width:20,height:20,borderRadius:"50%",background:`${a.color}18`,border:`1.5px solid ${a.color}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,color:a.color,flexShrink:0}}>{a.icon}</div>
-                <input className="input" value={a.name} onChange={e=>setForm(p=>({...p,agents:{...p.agents,[id]:{...a,name:e.target.value}}}))} style={{flex:1,fontSize:12,padding:"6px 10px"}}/>
-                <span style={{fontSize:10,color:"var(--t3)",fontFamily:"var(--fm)",width:120,flexShrink:0}}>{a.role}</span>
+        <div className="card" style={{ padding: 20 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "var(--fd)", marginBottom: 14 }}>Agent Names</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {Object.entries(form.agents).map(([id, a]) => (
+              <div key={id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 20, height: 20, borderRadius: "50%", background: `${a.color}18`, border: `1.5px solid ${a.color}50`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: a.color, flexShrink: 0 }}>{a.icon}</div>
+                <input className="input" value={a.name} onChange={e => setForm(p => ({ ...p, agents: { ...p.agents, [id]: { ...a, name: e.target.value } } }))} style={{ flex: 1, fontSize: 12, padding: "6px 10px" }} />
+                <span style={{ fontSize: 10, color: "var(--t3)", fontFamily: "var(--fm)", width: 120, flexShrink: 0 }}>{a.role}</span>
               </div>
             ))}
           </div>
@@ -621,57 +621,57 @@ function Settings({cfg, setCfg, notify}) {
       </div>
 
       {/* NEW OMNI-ROUTER API CONFIG CARD */}
-      <div className="card" style={{padding:20,marginBottom:16}}>
-        <div style={{fontSize:13,fontWeight:600,fontFamily:"var(--fd)",marginBottom:14}}>Omni-Router API Configuration</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-          <div style={{gridColumn:"1 / -1"}}>
-            <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>API KEY</label>
-            <input type="password" className="input" value={apiKey} onChange={e=>setApiKey(e.target.value)} placeholder="sk-..." />
+      <div className="card" style={{ padding: 20, marginBottom: 16 }}>
+        <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "var(--fd)", marginBottom: 14 }}>Omni-Router API Configuration</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={{ gridColumn: "1 / -1" }}>
+            <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>API KEY</label>
+            <input type="password" className="input" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="sk-..." />
           </div>
           <div>
-            <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>BASE URL</label>
-            <input className="input" value={baseUrl} onChange={e=>setBaseUrl(e.target.value)} placeholder="https://api.groq.com/openai/v1" />
+            <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>BASE URL</label>
+            <input className="input" value={baseUrl} onChange={e => setBaseUrl(e.target.value)} placeholder="https://api.groq.com/openai/v1" />
           </div>
           <div>
-            <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>MODEL ID</label>
-            <input className="input" value={model} onChange={e=>setModel(e.target.value)} placeholder="llama-3.3-70b-versatile" />
+            <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>MODEL ID</label>
+            <input className="input" value={model} onChange={e => setModel(e.target.value)} placeholder="llama-3.3-70b-versatile" />
           </div>
         </div>
-        <div style={{fontSize:10,color:"var(--t2)",marginTop:10}}>Works with Groq, OpenRouter, OpenAI, or any compatible endpoint.</div>
+        <div style={{ fontSize: 10, color: "var(--t2)", marginTop: 10 }}>Works with Groq, OpenRouter, OpenAI, or any compatible endpoint.</div>
       </div>
 
-     
+
 
       {/* Danger Zone */}
-      <div className="card" style={{padding:20,marginBottom:16,borderTop:"2px solid var(--red)"}}>
-        <div style={{fontSize:13,fontWeight:600,fontFamily:"var(--fd)",color:"var(--red)",marginBottom:4}}>Danger Zone</div>
-        <div style={{fontSize:12,color:"var(--t2)",marginBottom:14}}>Clear stored data. This cannot be undone — the page will reload with fresh defaults.</div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:8}}>
-          {CLEARABLE.map(item=>(
-            <div key={item.key} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 12px",background:"var(--s2)",borderRadius:"var(--r)",border:"1px solid var(--b1)"}}>
+      <div className="card" style={{ padding: 20, marginBottom: 16, borderTop: "2px solid var(--red)" }}>
+        <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "var(--fd)", color: "var(--red)", marginBottom: 4 }}>Danger Zone</div>
+        <div style={{ fontSize: 12, color: "var(--t2)", marginBottom: 14 }}>Clear stored data. This cannot be undone — the page will reload with fresh defaults.</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 8 }}>
+          {CLEARABLE.map(item => (
+            <div key={item.key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 12px", background: "var(--s2)", borderRadius: "var(--r)", border: "1px solid var(--b1)" }}>
               <div>
-                <div style={{fontSize:12,fontWeight:600}}>{item.label}</div>
-                <div style={{fontSize:10,color:"var(--t3)"}}>{item.desc}</div>
+                <div style={{ fontSize: 12, fontWeight: 600 }}>{item.label}</div>
+                <div style={{ fontSize: 10, color: "var(--t3)" }}>{item.desc}</div>
               </div>
-              <button className="btn btn-g" onClick={()=>setConfirmClear(item)}
-                style={{fontSize:9,padding:"3px 8px",color:"var(--red)",borderColor:"rgba(255,59,59,.25)",flexShrink:0,marginLeft:8}}>CLEAR</button>
+              <button className="btn btn-g" onClick={() => setConfirmClear(item)}
+                style={{ fontSize: 9, padding: "3px 8px", color: "var(--red)", borderColor: "rgba(255,59,59,.25)", flexShrink: 0, marginLeft: 8 }}>CLEAR</button>
             </div>
           ))}
         </div>
       </div>
 
-    <div style={{display:"flex",gap:10}}>
-        <button className="btn btn-a" onClick={save} style={{padding:"10px 24px"}}>SAVE SETTINGS</button>
+      <div style={{ display: "flex", gap: 10 }}>
+        <button className="btn btn-a" onClick={save} style={{ padding: "10px 24px" }}>SAVE SETTINGS</button>
         <button className="btn btn-g" onClick={reset}>Reset to Defaults</button>
-        <button 
-          className="btn btn-g" 
+        <button
+          className="btn btn-g"
           onClick={() => {
-            if(window.confirm("This will completely wipe your entire OS, all memory, and send you back to onboarding. Continue?")) {
+            if (window.confirm("This will completely wipe your entire OS, all memory, and send you back to onboarding. Continue?")) {
               localStorage.clear();
               window.location.reload();
             }
-          }} 
-          style={{color: "var(--red)", borderColor: "rgba(255,59,59,.3)"}}
+          }}
+          style={{ color: "var(--red)", borderColor: "rgba(255,59,59,.3)" }}
         >
           FACTORY RESET
         </button>
@@ -679,15 +679,15 @@ function Settings({cfg, setCfg, notify}) {
 
       {/* Confirm clear modal */}
       {confirmClear && (
-        <div style={{position:"fixed",inset:0,zIndex:500,background:"rgba(5,7,13,.85)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}
-          onClick={e=>e.target===e.currentTarget&&setConfirmClear(null)}>
-          <div className="card fu" style={{width:"100%",maxWidth:380,padding:24,borderTop:"2px solid var(--red)"}}>
-            <div style={{fontFamily:"var(--fd)",fontWeight:800,fontSize:16,marginBottom:8}}>Clear {confirmClear.label}?</div>
-            <div style={{fontSize:13,color:"var(--t2)",marginBottom:20,lineHeight:1.6}}>{confirmClear.desc} will be permanently deleted. The page will reload.</div>
-            <div style={{display:"flex",gap:8}}>
-              <button className="btn btn-g" onClick={()=>doClear(confirmClear)}
-                style={{flex:1,justifyContent:"center",padding:"10px",color:"var(--red)",borderColor:"rgba(255,59,59,.3)"}}>YES, CLEAR IT</button>
-              <button className="btn btn-a" onClick={()=>setConfirmClear(null)} style={{padding:"10px 16px"}}>CANCEL</button>
+        <div style={{ position: "fixed", inset: 0, zIndex: 500, background: "rgba(5,7,13,.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+          onClick={e => e.target === e.currentTarget && setConfirmClear(null)}>
+          <div className="card fu" style={{ width: "100%", maxWidth: 380, padding: 24, borderTop: "2px solid var(--red)" }}>
+            <div style={{ fontFamily: "var(--fd)", fontWeight: 800, fontSize: 16, marginBottom: 8 }}>Clear {confirmClear.label}?</div>
+            <div style={{ fontSize: 13, color: "var(--t2)", marginBottom: 20, lineHeight: 1.6 }}>{confirmClear.desc} will be permanently deleted. The page will reload.</div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn btn-g" onClick={() => doClear(confirmClear)}
+                style={{ flex: 1, justifyContent: "center", padding: "10px", color: "var(--red)", borderColor: "rgba(255,59,59,.3)" }}>YES, CLEAR IT</button>
+              <button className="btn btn-a" onClick={() => setConfirmClear(null)} style={{ padding: "10px 16px" }}>CANCEL</button>
             </div>
           </div>
         </div>
@@ -699,53 +699,53 @@ function Settings({cfg, setCfg, notify}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // DASHBOARD
 // ─────────────────────────────────────────────────────────────────────────────
-function Dashboard({tasks, setActive, setChatAgent, cfg}) {
-  const bl = tasks.filter(t=>t.status==="backlog");
-  const ip = tasks.filter(t=>t.status==="in_progress");
-  const dn = tasks.filter(t=>t.status==="completed");
+function Dashboard({ tasks, setActive, setChatAgent, cfg }) {
+  const bl = tasks.filter(t => t.status === "backlog");
+  const ip = tasks.filter(t => t.status === "in_progress");
+  const dn = tasks.filter(t => t.status === "completed");
   const agents = Object.entries(cfg.agents);
 
   return (
     <div className="fu">
-      <div style={{marginBottom:22}}>
-        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:4}}>
-          <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em"}}>War Room</h1>
+      <div style={{ marginBottom: 22 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
+          <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em" }}>War Room</h1>
           <span className="tag tg">COMMAND CENTER</span>
         </div>
-        <p style={{color:"var(--t2)",fontSize:13}}>{cfg.brandName} — autonomous executive team, operating 24/7.</p>
+        <p style={{ color: "var(--t2)", fontSize: 13 }}>{cfg.brandName} — autonomous executive team, operating 24/7.</p>
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,marginBottom:18}}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10, marginBottom: 18 }}>
         {[
-          {l:"AGENTS LIVE",v:"7/7",c:"var(--green)"},
-          {l:"IN PROGRESS",v:ip.length,c:"var(--amber)"},
-          {l:"COMPLETED",v:dn.length,c:"var(--cyan)"},
-          {l:"BACKLOG",v:bl.length,c:"var(--t2)"},
-        ].map(s=>(
-          <div key={s.l} className="card" style={{padding:"14px 16px"}}>
-            <div className="stat" style={{color:s.c,marginBottom:3}}>{s.v}</div>
-            <div style={{fontSize:9,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em"}}>{s.l}</div>
+          { l: "AGENTS LIVE", v: "7/7", c: "var(--green)" },
+          { l: "IN PROGRESS", v: ip.length, c: "var(--amber)" },
+          { l: "COMPLETED", v: dn.length, c: "var(--cyan)" },
+          { l: "BACKLOG", v: bl.length, c: "var(--t2)" },
+        ].map(s => (
+          <div key={s.l} className="card" style={{ padding: "14px 16px" }}>
+            <div className="stat" style={{ color: s.c, marginBottom: 3 }}>{s.v}</div>
+            <div style={{ fontSize: 9, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em" }}>{s.l}</div>
           </div>
         ))}
       </div>
 
-      <div style={{marginBottom:18}}>
+      <div style={{ marginBottom: 18 }}>
         <SH>TEAM — LIVE AGENTS</SH>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:8}}>
-          {agents.map(([id,a])=>{
-            const t = tasks.find(x=>x.agent===id&&x.status==="in_progress");
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 8 }}>
+          {agents.map(([id, a]) => {
+            const t = tasks.find(x => x.agent === id && x.status === "in_progress");
             return (
-              <div key={id} className="card fu" style={{padding:"12px 8px",borderTop:`2px solid ${a.color}`,textAlign:"center",cursor:"pointer",transition:"transform .14s"}}
-                onClick={()=>{ setChatAgent(id); setActive("chat"); }}
-                onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
-                onMouseLeave={e=>e.currentTarget.style.transform=""}>
-                <div style={{display:"flex",justifyContent:"center",marginBottom:7}}>
-                  <Avatar id={id} size={32} dot level cfg={cfg}/>
+              <div key={id} className="card fu" style={{ padding: "12px 8px", borderTop: `2px solid ${a.color}`, textAlign: "center", cursor: "pointer", transition: "transform .14s" }}
+                onClick={() => { setChatAgent(id); setActive("chat"); }}
+                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+                onMouseLeave={e => e.currentTarget.style.transform = ""}>
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: 7 }}>
+                  <Avatar id={id} size={32} dot level cfg={cfg} />
                 </div>
-                <div style={{fontSize:11,fontFamily:"var(--fd)",fontWeight:700,color:"var(--t1)",marginBottom:1}}>{a.name}</div>
-                <div style={{fontSize:9,color:a.color,fontFamily:"var(--fm)",marginBottom:7}}>{a.role.split("/")[0].trim()}</div>
-                <XPBar id={id} cfg={cfg}/>
-                <div style={{marginTop:7,fontSize:9,color:"var(--t3)",fontFamily:"var(--fm)",lineHeight:1.3}}>{t?t.title.substring(0,20)+"...":"Standby"}</div>
+                <div style={{ fontSize: 11, fontFamily: "var(--fd)", fontWeight: 700, color: "var(--t1)", marginBottom: 1 }}>{a.name}</div>
+                <div style={{ fontSize: 9, color: a.color, fontFamily: "var(--fm)", marginBottom: 7 }}>{a.role.split("/")[0].trim()}</div>
+                <XPBar id={id} cfg={cfg} />
+                <div style={{ marginTop: 7, fontSize: 9, color: "var(--t3)", fontFamily: "var(--fm)", lineHeight: 1.3 }}>{t ? t.title.substring(0, 20) + "..." : "Standby"}</div>
               </div>
             );
           })}
@@ -754,25 +754,25 @@ function Dashboard({tasks, setActive, setChatAgent, cfg}) {
 
       <div>
         <SH>OPERATIONS BOARD</SH>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
           {[
-            {k:"backlog",l:"BACKLOG",ac:"var(--t3)",items:bl},
-            {k:"in_progress",l:"IN PROGRESS",ac:"var(--amber)",items:ip},
-            {k:"completed",l:"COMPLETED",ac:"var(--green)",items:dn},
-          ].map(col=>(
+            { k: "backlog", l: "BACKLOG", ac: "var(--t3)", items: bl },
+            { k: "in_progress", l: "IN PROGRESS", ac: "var(--amber)", items: ip },
+            { k: "completed", l: "COMPLETED", ac: "var(--green)", items: dn },
+          ].map(col => (
             <div key={col.k} className="card">
-              <div style={{padding:"9px 12px",borderBottom:"1px solid var(--b1)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <span style={{fontSize:9,fontFamily:"var(--fm)",color:col.ac,letterSpacing:".1em"}}>{col.l}</span>
-                <span style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:800,color:col.ac}}>{col.items.length}</span>
+              <div style={{ padding: "9px 12px", borderBottom: "1px solid var(--b1)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 9, fontFamily: "var(--fm)", color: col.ac, letterSpacing: ".1em" }}>{col.l}</span>
+                <span style={{ fontFamily: "var(--fd)", fontSize: 12, fontWeight: 800, color: col.ac }}>{col.items.length}</span>
               </div>
-              <div style={{padding:8,display:"flex",flexDirection:"column",gap:7,minHeight:120}}>
-                {col.items.length===0&&<div style={{textAlign:"center",color:"var(--t3)",fontSize:11,padding:"18px 0",fontFamily:"var(--fm)"}}>— empty —</div>}
-                {col.items.map(task=>(
-                  <div key={task.id} className="kcard" style={{borderLeft:`3px solid ${cfg.agents[task.agent]?.color||"#fff"}`}}>
-                    <div style={{fontSize:12,fontWeight:600,marginBottom:5,lineHeight:1.3}}>{task.title}</div>
-                    <div style={{display:"flex",justifyContent:"space-between"}}>
-                      <span style={{fontSize:10,fontFamily:"var(--fm)",color:cfg.agents[task.agent]?.color,fontWeight:600}}>{task.agent}</span>
-                      <span className={`tag ${task.priority==="high"?"tred":task.priority==="medium"?"tamb":""}`}>{task.priority}</span>
+              <div style={{ padding: 8, display: "flex", flexDirection: "column", gap: 7, minHeight: 120 }}>
+                {col.items.length === 0 && <div style={{ textAlign: "center", color: "var(--t3)", fontSize: 11, padding: "18px 0", fontFamily: "var(--fm)" }}>— empty —</div>}
+                {col.items.map(task => (
+                  <div key={task.id} className="kcard" style={{ borderLeft: `3px solid ${cfg.agents[task.agent]?.color || "#fff"}` }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 5, lineHeight: 1.3 }}>{task.title}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ fontSize: 10, fontFamily: "var(--fm)", color: cfg.agents[task.agent]?.color, fontWeight: 600 }}>{task.agent}</span>
+                      <span className={`tag ${task.priority === "high" ? "tred" : task.priority === "medium" ? "tamb" : ""}`}>{task.priority}</span>
                     </div>
                   </div>
                 ))}
@@ -789,17 +789,17 @@ function Dashboard({tasks, setActive, setChatAgent, cfg}) {
 // CHAT — full persistent memory per agent
 // ─────────────────────────────────────────────────────────────────────────────
 const AGENT_STARTERS = {
-  APEX:   ["Build me a 90-day action plan to hit $50K MRR","What should I prioritize this week?","Audit my current business model and find the biggest leaks","Create an OKR framework for Q2"],
-  ORACLE: ["Analyze the top 5 competitors in AI coaching","What content hooks are working best right now?","Find the biggest objection patterns in my niche","Give me a market research brief on info-product buyers"],
-  PULSE:  ["Write 3 Reel scripts on how I replaced my team with AI","Generate a YouTube script: The $0 to $30K blueprint","Give me 10 hook ideas for my next batch of content","Rewrite this caption to be more raw and authentic: [paste here]"],
-  CIPHER: ["Write a 5-part DM sequence for cold outreach","Build an objection handler for 'I need to think about it'","Create a VSL script for my $3K coaching offer","Write a 7-email nurture sequence for dead leads"],
-  FORGE:  ["Design a Supabase schema for tracking agent memory","Write an n8n workflow for lead capture to CRM","How do I connect Typeform to Notion via webhooks?","Build a quiz funnel tech stack from scratch"],
-  VAULT:  ["Analyze my token spend and find where I can cut costs","Build a 6-month revenue forecast for a $5K offer","Create a P&L template for an AI agency","What's my break-even point at $3K/mo expenses?"],
-  ECHO:   ["Write a 4-month client onboarding sequence","Build a Discord welcome flow for new members","Create a 30-day check-in template for clients","Draft a client win case study framework"],
+  APEX: ["Build me a 90-day action plan to hit $50K MRR", "What should I prioritize this week?", "Audit my current business model and find the biggest leaks", "Create an OKR framework for Q2"],
+  ORACLE: ["Analyze the top 5 competitors in AI coaching", "What content hooks are working best right now?", "Find the biggest objection patterns in my niche", "Give me a market research brief on info-product buyers"],
+  PULSE: ["Write 3 Reel scripts on how I replaced my team with AI", "Generate a YouTube script: The $0 to $30K blueprint", "Give me 10 hook ideas for my next batch of content", "Rewrite this caption to be more raw and authentic: [paste here]"],
+  CIPHER: ["Write a 5-part DM sequence for cold outreach", "Build an objection handler for 'I need to think about it'", "Create a VSL script for my $3K coaching offer", "Write a 7-email nurture sequence for dead leads"],
+  FORGE: ["Design a Supabase schema for tracking agent memory", "Write an n8n workflow for lead capture to CRM", "How do I connect Typeform to Notion via webhooks?", "Build a quiz funnel tech stack from scratch"],
+  VAULT: ["Analyze my token spend and find where I can cut costs", "Build a 6-month revenue forecast for a $5K offer", "Create a P&L template for an AI agency", "What's my break-even point at $3K/mo expenses?"],
+  ECHO: ["Write a 4-month client onboarding sequence", "Build a Discord welcome flow for new members", "Create a 30-day check-in template for clients", "Draft a client win case study framework"],
 };
 
-function Chat({cfg, notify, initialAgent}) {
-  const [sel, setSel] = useState(initialAgent||"APEX");
+function Chat({ cfg, notify, initialAgent }) {
+  const [sel, setSel] = useState(initialAgent || "APEX");
   const [sessions, setSess] = useState({});
   const [input, setInput] = useState("");
   const [loading, setLoad] = useState(false);
@@ -807,122 +807,124 @@ function Chat({cfg, notify, initialAgent}) {
   const bottomRef = useRef(null);
   const loaded = useRef(false);
 
-  useEffect(()=>{ sGet("chat_v3",{}).then(s=>{setSess(s);loaded.current=true;}); },[]);
-  useEffect(()=>{ if(loaded.current) sSet("chat_v3",sessions); },[sessions]);
-  useEffect(()=>{ bottomRef.current?.scrollIntoView({behavior:"smooth"}); },[sessions,loading,sel]);
+  useEffect(() => { sGet("chat_v3", {}).then(s => { setSess(s); loaded.current = true; }); }, []);
+  useEffect(() => { if (loaded.current) sSet("chat_v3", sessions); }, [sessions]);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [sessions, loading, sel]);
 
-  const msgs = sessions[sel]||[];
+  const msgs = sessions[sel] || [];
   const a = cfg.agents[sel];
 
-  const send = async()=>{
-    if(!input.trim()||loading) return;
-    const um = {role:"user",content:input};
-    const nm = [...msgs,um];
-    setSess(p=>({...p,[sel]:nm}));
+  const send = async () => {
+    if (!input.trim() || loading) return;
+    const um = { role: "user", content: input };
+    const nm = [...msgs, um];
+    setSess(p => ({ ...p, [sel]: nm }));
     setInput(""); setErr(""); setLoad(true);
     try {
-      const sys = getSysPrompt(sel,cfg);
-      const reply = await claude(sys, nm.map(m=>({role:m.role,content:m.content})));
-      setSess(p=>({...p,[sel]:[...nm,{role:"assistant",content:reply}]}));
-    } catch(e) { setErr(e.message); }
+      const sys = getSysPrompt(sel, cfg);
+      const reply = await claude(sys, nm.map(m => ({ role: m.role, content: m.content })));
+      setSess(p => ({ ...p, [sel]: [...nm, { role: "assistant", content: reply }] }));
+    } catch (e) { setErr(e.message); }
     setLoad(false);
   };
 
   return (
-    <div className="fu" style={{height:"calc(100vh - var(--topbar) - 40px)",display:"flex",gap:12}}>
-      <div className="card" style={{width:196,flexShrink:0,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-        <div style={{padding:"10px 12px 6px"}}><span className="sh">AGENTS</span></div>
-        <div style={{flex:1,overflowY:"auto"}}>
-          {Object.entries(cfg.agents).map(([id,a])=>{
-            const on = sel===id;
-            const has = (sessions[id]?.length||0)>0;
+    <div className="fu" style={{ height: "calc(100vh - var(--topbar) - 40px)", display: "flex", gap: 12 }}>
+      <div className="card" style={{ width: 196, flexShrink: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div style={{ padding: "10px 12px 6px" }}><span className="sh">AGENTS</span></div>
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          {Object.entries(cfg.agents).map(([id, a]) => {
+            const on = sel === id;
+            const has = (sessions[id]?.length || 0) > 0;
             return (
-              <button key={id} onClick={()=>setSel(id)} style={{
-                width:"100%",textAlign:"left",padding:"9px 12px",
-                background:on?`${a.color}12`:"transparent",
-                border:"none",borderLeft:`2px solid ${on?a.color:"transparent"}`,
-                cursor:"pointer",fontFamily:"var(--fb)",transition:"all .12s",
-                display:"flex",alignItems:"center",gap:9,
+              <button key={id} onClick={() => setSel(id)} style={{
+                width: "100%", textAlign: "left", padding: "9px 12px",
+                background: on ? `${a.color}12` : "transparent",
+                border: "none", borderLeft: `2px solid ${on ? a.color : "transparent"}`,
+                cursor: "pointer", fontFamily: "var(--fb)", transition: "all .12s",
+                display: "flex", alignItems: "center", gap: 9,
               }}>
-                <Avatar id={id} size={26} dot cfg={cfg}/>
-                <div style={{flex:1,overflow:"hidden"}}>
-                  <div style={{fontSize:11,fontWeight:600,color:on?a.color:"var(--t1)",fontFamily:"var(--fd)"}}>{a.name}</div>
-                  <div style={{fontSize:9,color:"var(--t3)",fontFamily:"var(--fm)"}}>{a.role.split("/")[0].trim()}</div>
+                <Avatar id={id} size={26} dot cfg={cfg} />
+                <div style={{ flex: 1, overflow: "hidden" }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: on ? a.color : "var(--t1)", fontFamily: "var(--fd)" }}>{a.name}</div>
+                  <div style={{ fontSize: 9, color: "var(--t3)", fontFamily: "var(--fm)" }}>{a.role.split("/")[0].trim()}</div>
                 </div>
-                {has&&<div style={{width:5,height:5,borderRadius:"50%",background:a.color,flexShrink:0,boxShadow:`0 0 5px ${a.color}`}}/>}
+                {has && <div style={{ width: 5, height: 5, borderRadius: "50%", background: a.color, flexShrink: 0, boxShadow: `0 0 5px ${a.color}` }} />}
               </button>
             );
           })}
         </div>
       </div>
 
-      <div className="card" style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-        <div style={{padding:"11px 16px",borderBottom:"1px solid var(--b1)",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-          <Avatar id={sel} size={36} dot level cfg={cfg}/>
-          <div style={{flex:1}}>
-            <div style={{fontFamily:"var(--fd)",fontWeight:700,fontSize:14}}>{a.name}
-              <span style={{marginLeft:8,fontSize:9,fontFamily:"var(--fm)",color:a.color,padding:"1px 5px",background:`${a.color}18`,borderRadius:3}}>LIVE</span>
+      <div className="card" style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div style={{ padding: "11px 16px", borderBottom: "1px solid var(--b1)", display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <Avatar id={sel} size={36} dot level cfg={cfg} />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: "var(--fd)", fontWeight: 700, fontSize: 14 }}>{a.name}
+              <span style={{ marginLeft: 8, fontSize: 9, fontFamily: "var(--fm)", color: a.color, padding: "1px 5px", background: `${a.color}18`, borderRadius: 3 }}>LIVE</span>
             </div>
-            <div style={{fontSize:11,color:"var(--t2)"}}>{a.role}</div>
+            <div style={{ fontSize: 11, color: "var(--t2)" }}>{a.role}</div>
           </div>
-          {msgs.length>0&&<button className="btn btn-g" onClick={()=>setSess(p=>({...p,[sel]:[]}))} style={{fontSize:10,padding:"4px 9px"}}>Clear</button>}
+          {msgs.length > 0 && <button className="btn btn-g" onClick={() => setSess(p => ({ ...p, [sel]: [] }))} style={{ fontSize: 10, padding: "4px 9px" }}>Clear</button>}
         </div>
 
-        <div style={{flex:1,overflowY:"auto",padding:16}}>
-          {msgs.length===0&&(
-            <div style={{paddingTop:36,maxWidth:440,margin:"0 auto"}} className="fi">
-              <div style={{textAlign:"center",marginBottom:22}}>
-                <div style={{fontSize:38,marginBottom:10,filter:`drop-shadow(0 0 14px ${a.color})`}}>{a.icon}</div>
-                <div style={{fontFamily:"var(--fd)",fontSize:17,fontWeight:700,marginBottom:4}}>{a.name} ready.</div>
-                <div style={{fontSize:12,color:"var(--t2)",lineHeight:1.5}}>{a.role}</div>
+        <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
+          {msgs.length === 0 && (
+            <div style={{ paddingTop: 36, maxWidth: 440, margin: "0 auto" }} className="fi">
+              <div style={{ textAlign: "center", marginBottom: 22 }}>
+                <div style={{ fontSize: 38, marginBottom: 10, filter: `drop-shadow(0 0 14px ${a.color})` }}>{a.icon}</div>
+                <div style={{ fontFamily: "var(--fd)", fontSize: 17, fontWeight: 700, marginBottom: 4 }}>{a.name} ready.</div>
+                <div style={{ fontSize: 12, color: "var(--t2)", lineHeight: 1.5 }}>{a.role}</div>
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:7}}>
-                {(AGENT_STARTERS[sel]||[]).map((s,i)=>(
-                  <button key={i} onClick={()=>setInput(s)} style={{
-                    textAlign:"left",padding:"10px 12px",background:"var(--s2)",
-                    border:`1px solid var(--b1)`,borderRadius:"var(--r)",
-                    color:"var(--t2)",fontSize:11,fontFamily:"var(--fb)",
-                    cursor:"pointer",lineHeight:1.4,transition:"all .12s",
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7 }}>
+                {(AGENT_STARTERS[sel] || []).map((s, i) => (
+                  <button key={i} onClick={() => setInput(s)} style={{
+                    textAlign: "left", padding: "10px 12px", background: "var(--s2)",
+                    border: `1px solid var(--b1)`, borderRadius: "var(--r)",
+                    color: "var(--t2)", fontSize: 11, fontFamily: "var(--fb)",
+                    cursor: "pointer", lineHeight: 1.4, transition: "all .12s",
                   }}
-                  onMouseEnter={e=>{e.currentTarget.style.borderColor=a.color;e.currentTarget.style.color="var(--t1)";}}
-                  onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--b1)";e.currentTarget.style.color="var(--t2)";}}>
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = a.color; e.currentTarget.style.color = "var(--t1)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--b1)"; e.currentTarget.style.color = "var(--t2)"; }}>
                     {s}
                   </button>
                 ))}
               </div>
             </div>
           )}
-          {msgs.map((m,i)=>(
-            <div key={i} className="fi" style={{display:"flex",gap:9,marginBottom:12,justifyContent:m.role==="user"?"flex-end":"flex-start"}}>
-              {m.role==="assistant"&&<Avatar id={sel} size={26} cfg={cfg}/>}
-              <div style={{maxWidth:"70%",padding:"10px 14px",
-                background:m.role==="user"?a.color:"var(--s2)",
-                color:m.role==="user"?"#060500":"var(--t1)",
-                borderRadius:m.role==="user"?"12px 12px 4px 12px":"12px 12px 12px 4px",
-                border:m.role==="assistant"?"1px solid var(--b1)":undefined,
-                fontSize:13,lineHeight:1.7,whiteSpace:"pre-wrap",fontFamily:"var(--fb)"}}>
+          {msgs.map((m, i) => (
+            <div key={i} className="fi" style={{ display: "flex", gap: 9, marginBottom: 12, justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
+              {m.role === "assistant" && <Avatar id={sel} size={26} cfg={cfg} />}
+              <div style={{
+                maxWidth: "70%", padding: "10px 14px",
+                background: m.role === "user" ? a.color : "var(--s2)",
+                color: m.role === "user" ? "#060500" : "var(--t1)",
+                borderRadius: m.role === "user" ? "12px 12px 4px 12px" : "12px 12px 12px 4px",
+                border: m.role === "assistant" ? "1px solid var(--b1)" : undefined,
+                fontSize: 13, lineHeight: 1.7, whiteSpace: "pre-wrap", fontFamily: "var(--fb)"
+              }}>
                 {m.content}
               </div>
             </div>
           ))}
-          {loading&&(
-            <div style={{display:"flex",gap:9,marginBottom:12}}>
-              <Avatar id={sel} size={26} cfg={cfg}/>
-              <div style={{padding:"12px 14px",background:"var(--s2)",border:"1px solid var(--b1)",borderRadius:"12px 12px 12px 4px",display:"flex",gap:4,alignItems:"center"}}>
-                {[0,1,2].map(i=><div key={i} style={{width:5,height:5,borderRadius:"50%",background:a.color,animation:`pulse 1s ease ${i*.2}s infinite`}}/>)}
+          {loading && (
+            <div style={{ display: "flex", gap: 9, marginBottom: 12 }}>
+              <Avatar id={sel} size={26} cfg={cfg} />
+              <div style={{ padding: "12px 14px", background: "var(--s2)", border: "1px solid var(--b1)", borderRadius: "12px 12px 12px 4px", display: "flex", gap: 4, alignItems: "center" }}>
+                {[0, 1, 2].map(i => <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: a.color, animation: `pulse 1s ease ${i * .2}s infinite` }} />)}
               </div>
             </div>
           )}
-          {err&&<div style={{textAlign:"center",color:"var(--red)",fontSize:11,padding:"8px 12px",background:"rgba(255,59,59,.1)",borderRadius:5,marginBottom:8,fontFamily:"var(--fm)"}}>⚠ {err}</div>}
-          <div ref={bottomRef}/>
+          {err && <div style={{ textAlign: "center", color: "var(--red)", fontSize: 11, padding: "8px 12px", background: "rgba(255,59,59,.1)", borderRadius: 5, marginBottom: 8, fontFamily: "var(--fm)" }}>⚠ {err}</div>}
+          <div ref={bottomRef} />
         </div>
 
-        <div style={{padding:"11px 14px",borderTop:"1px solid var(--b1)",display:"flex",gap:8,flexShrink:0}}>
-          <input className="input" value={input} onChange={e=>setInput(e.target.value)}
-            onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&send()}
-            placeholder={`Message ${a.name}...`} style={{flex:1}}/>
-          <button className="btn btn-a" onClick={send} disabled={loading||!input.trim()}>
-            {loading?<Spin color="#060500"/>:"SEND →"}
+        <div style={{ padding: "11px 14px", borderTop: "1px solid var(--b1)", display: "flex", gap: 8, flexShrink: 0 }}>
+          <input className="input" value={input} onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && !e.shiftKey && send()}
+            placeholder={`Message ${a.name}...`} style={{ flex: 1 }} />
+          <button className="btn btn-a" onClick={send} disabled={loading || !input.trim()}>
+            {loading ? <Spin color="#060500" /> : "SEND →"}
           </button>
         </div>
       </div>
@@ -933,30 +935,30 @@ function Chat({cfg, notify, initialAgent}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // AGENTS VIEW
 // ─────────────────────────────────────────────────────────────────────────────
-function Agents({cfg, setActive, setChatAgent}) {
+function Agents({ cfg, setActive, setChatAgent }) {
   return (
     <div className="fu">
-      <div style={{marginBottom:22}}>
-        <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Agent Roster</h1>
-        <p style={{color:"var(--t2)",fontSize:13}}>7 autonomous AI executives. Click any agent to open their chat.</p>
+      <div style={{ marginBottom: 22 }}>
+        <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Agent Roster</h1>
+        <p style={{ color: "var(--t2)", fontSize: 13 }}>7 autonomous AI executives. Click any agent to open their chat.</p>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:12}}>
-        {Object.entries(cfg.agents).map(([id,a],idx)=>(
-          <div key={id} className="card fu" onClick={()=>{ setChatAgent(id); setActive("chat"); }}
-            style={{padding:16,borderTop:`3px solid ${a.color}`,animationDelay:`${idx*.06}s`,transition:"transform .14s",cursor:"pointer"}}
-            onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
-            onMouseLeave={e=>e.currentTarget.style.transform=""}>
-            <div style={{display:"flex",alignItems:"center",gap:11,marginBottom:12}}>
-              <Avatar id={id} size={44} dot level cfg={cfg}/>
-              <div style={{flex:1}}>
-                <div style={{fontFamily:"var(--fd)",fontSize:16,fontWeight:800,letterSpacing:"-.01em"}}>{a.name}</div>
-                <div style={{fontSize:11,color:a.color,fontFamily:"var(--fm)"}}>{a.role}</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(290px,1fr))", gap: 12 }}>
+        {Object.entries(cfg.agents).map(([id, a], idx) => (
+          <div key={id} className="card fu" onClick={() => { setChatAgent(id); setActive("chat"); }}
+            style={{ padding: 16, borderTop: `3px solid ${a.color}`, animationDelay: `${idx * .06}s`, transition: "transform .14s", cursor: "pointer" }}
+            onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+            onMouseLeave={e => e.currentTarget.style.transform = ""}>
+            <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 12 }}>
+              <Avatar id={id} size={44} dot level cfg={cfg} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontFamily: "var(--fd)", fontSize: 16, fontWeight: 800, letterSpacing: "-.01em" }}>{a.name}</div>
+                <div style={{ fontSize: 11, color: a.color, fontFamily: "var(--fm)" }}>{a.role}</div>
               </div>
-              <span className="tag tgreen" style={{marginLeft:"auto"}}>ONLINE</span>
+              <span className="tag tgreen" style={{ marginLeft: "auto" }}>ONLINE</span>
             </div>
-            <div style={{marginBottom:10}}><XPBar id={id} cfg={cfg}/></div>
-            <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.6,marginBottom:10}}>{getSysPrompt(id,cfg).substring(0,110)}...</p>
-            <div style={{fontSize:10,fontFamily:"var(--fm)",color:a.color,opacity:.7}}>OPEN CHAT →</div>
+            <div style={{ marginBottom: 10 }}><XPBar id={id} cfg={cfg} /></div>
+            <p style={{ fontSize: 12, color: "var(--t2)", lineHeight: 1.6, marginBottom: 10 }}>{getSysPrompt(id, cfg).substring(0, 110)}...</p>
+            <div style={{ fontSize: 10, fontFamily: "var(--fm)", color: a.color, opacity: .7 }}>OPEN CHAT →</div>
           </div>
         ))}
       </div>
@@ -967,7 +969,7 @@ function Agents({cfg, setActive, setChatAgent}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // CONTENT GENERATOR
 // ─────────────────────────────────────────────────────────────────────────────
-function ContentGen({platform, notify, cfg}) {
+function ContentGen({ platform, notify, cfg }) {
   const [topic, setTopic] = useState("");
   const [angle, setAngle] = useState("personal story");
   const [output, setOutput] = useState("");
@@ -975,68 +977,68 @@ function ContentGen({platform, notify, cfg}) {
   const [err, setErr] = useState("");
   const [hist, setHist] = useState([]);
 
-  useEffect(()=>{ sGet(`cgen_${platform}`,[]).then(setHist); },[platform]);
+  useEffect(() => { sGet(`cgen_${platform}`, []).then(setHist); }, [platform]);
 
-  const angles = ["personal story","education/value","controversy","behind the scenes","results/proof","hot take","contrarian"];
+  const angles = ["personal story", "education/value", "controversy", "behind the scenes", "results/proof", "hot take", "contrarian"];
 
-  const gen = async()=>{
-    if(!topic.trim()||loading) return;
+  const gen = async () => {
+    if (!topic.trim() || loading) return;
     setLoad(true); setErr(""); setOutput("");
-    const p = platform==="instagram"
-      ?`Generate 3 high-converting Instagram Reel scripts for topic: "${topic}" with angle: "${angle}".\n\nFor EACH:\n**VARIATION [N]**\n[HOOK — first 3 seconds]\n[BODY — 30-60 sec]\n[CTA]\n[CAPTION + hashtags]\n\nRaw, authentic voice.`
-      :`Write a complete YouTube script for: "${topic}" (angle: "${angle}").\n\n**3 TITLE OPTIONS**\n**THUMBNAIL CONCEPT**\n**HOOK (0-30s)**\n**INTRO (30-90s)**\n**MAIN CONTENT** (with timestamps)\n**PATTERN INTERRUPTS**\n**OUTRO + CTA**`;
+    const p = platform === "instagram"
+      ? `Generate 3 high-converting Instagram Reel scripts for topic: "${topic}" with angle: "${angle}".\n\nFor EACH:\n**VARIATION [N]**\n[HOOK — first 3 seconds]\n[BODY — 30-60 sec]\n[CTA]\n[CAPTION + hashtags]\n\nRaw, authentic voice.`
+      : `Write a complete YouTube script for: "${topic}" (angle: "${angle}").\n\n**3 TITLE OPTIONS**\n**THUMBNAIL CONCEPT**\n**HOOK (0-30s)**\n**INTRO (30-90s)**\n**MAIN CONTENT** (with timestamps)\n**PATTERN INTERRUPTS**\n**OUTRO + CTA**`;
     try {
-      const r = await claude(getSysPrompt("PULSE",cfg),[{role:"user",content:p}]);
+      const r = await claude(getSysPrompt("PULSE", cfg), [{ role: "user", content: p }]);
       setOutput(r);
-      const e = {topic,angle,date:new Date().toLocaleDateString(),result:r};
-      const nh = [e,...hist.slice(0,9)];
-      setHist(nh); sSet(`cgen_${platform}`,nh);
-      notify(`${platform==="instagram"?"Reel scripts":"YouTube script"} generated by ${cfg.agents.PULSE.name}!`);
-    } catch(e){setErr(e.message);}
+      const e = { topic, angle, date: new Date().toLocaleDateString(), result: r };
+      const nh = [e, ...hist.slice(0, 9)];
+      setHist(nh); sSet(`cgen_${platform}`, nh);
+      notify(`${platform === "instagram" ? "Reel scripts" : "YouTube script"} generated by ${cfg.agents.PULSE.name}!`);
+    } catch (e) { setErr(e.message); }
     setLoad(false);
   };
 
   return (
     <div className="fu">
-      <div style={{marginBottom:22}}>
-        <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>
-          {platform==="instagram"?"Instagram Scripts":"YouTube Scripts"}
+      <div style={{ marginBottom: 22 }}>
+        <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>
+          {platform === "instagram" ? "Instagram Scripts" : "YouTube Scripts"}
         </h1>
-        <p style={{color:"var(--t2)",fontSize:13}}>Powered by {cfg.agents.PULSE.name} — writes in your authentic voice.</p>
+        <p style={{ color: "var(--t2)", fontSize: 13 }}>Powered by {cfg.agents.PULSE.name} — writes in your authentic voice.</p>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 300px",gap:12,marginBottom:12}}>
-        <div className="card" style={{padding:16}}>
-          <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>TOPIC / IDEA</label>
-          <textarea className="input" value={topic} onChange={e=>setTopic(e.target.value)}
-            placeholder={platform==="instagram"?"e.g. How I replaced my entire team with AI agents":"e.g. The $0 to $30k blueprint nobody shows you"}
-            style={{marginBottom:12,height:88}}/>
-          <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:7}}>CONTENT ANGLE</label>
-          <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:14}}>
-            {angles.map(an=>(
-              <button key={an} onClick={()=>setAngle(an)} style={{
-                padding:"4px 11px",borderRadius:4,fontSize:11,fontFamily:"var(--fb)",
-                background:angle===an?"var(--a1)":"var(--s3)",
-                color:angle===an?"var(--a)":"var(--t2)",
-                border:`1px solid ${angle===an?"var(--a2)":"var(--b1)"}`,
-                cursor:"pointer",transition:"all .12s",
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 12, marginBottom: 12 }}>
+        <div className="card" style={{ padding: 16 }}>
+          <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>TOPIC / IDEA</label>
+          <textarea className="input" value={topic} onChange={e => setTopic(e.target.value)}
+            placeholder={platform === "instagram" ? "e.g. How I replaced my entire team with AI agents" : "e.g. The $0 to $30k blueprint nobody shows you"}
+            style={{ marginBottom: 12, height: 88 }} />
+          <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 7 }}>CONTENT ANGLE</label>
+          <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 14 }}>
+            {angles.map(an => (
+              <button key={an} onClick={() => setAngle(an)} style={{
+                padding: "4px 11px", borderRadius: 4, fontSize: 11, fontFamily: "var(--fb)",
+                background: angle === an ? "var(--a1)" : "var(--s3)",
+                color: angle === an ? "var(--a)" : "var(--t2)",
+                border: `1px solid ${angle === an ? "var(--a2)" : "var(--b1)"}`,
+                cursor: "pointer", transition: "all .12s",
               }}>{an}</button>
             ))}
           </div>
-          <button className="btn btn-a" onClick={gen} disabled={loading||!topic.trim()} style={{width:"100%",justifyContent:"center",padding:"10px"}}>
-            {loading?<><Spin color="#060500"/>WRITING...</>:`⚡ GENERATE ${platform==="instagram"?"REEL SCRIPTS":"YOUTUBE SCRIPT"}`}
+          <button className="btn btn-a" onClick={gen} disabled={loading || !topic.trim()} style={{ width: "100%", justifyContent: "center", padding: "10px" }}>
+            {loading ? <><Spin color="#060500" />WRITING...</> : `⚡ GENERATE ${platform === "instagram" ? "REEL SCRIPTS" : "YOUTUBE SCRIPT"}`}
           </button>
-          {err&&<div style={{color:"var(--red)",fontSize:11,marginTop:8,fontFamily:"var(--fm)"}}>⚠ {err}</div>}
+          {err && <div style={{ color: "var(--red)", fontSize: 11, marginTop: 8, fontFamily: "var(--fm)" }}>⚠ {err}</div>}
         </div>
-        <div className="card" style={{padding:14}}>
-          <SH>HISTORY <span className="tag" style={{marginLeft:4}}>{hist.length}</span></SH>
-          {hist.length===0?<div style={{color:"var(--t3)",fontSize:11,fontFamily:"var(--fm)",textAlign:"center",padding:"18px 0"}}>No history yet.</div>:(
-            <div style={{display:"flex",flexDirection:"column",gap:5,maxHeight:280,overflowY:"auto"}}>
-              {hist.map((h,i)=>(
-                <div key={i} onClick={()=>setOutput(h.result)} style={{padding:"7px 9px",background:"var(--s2)",borderRadius:4,cursor:"pointer",border:"1px solid var(--b1)"}}>
-                  <div style={{fontSize:12,fontWeight:500,marginBottom:2,lineHeight:1.3}}>{h.topic}</div>
-                  <div style={{display:"flex",justifyContent:"space-between"}}>
-                    <span style={{fontSize:9,color:"var(--t3)",fontFamily:"var(--fm)"}}>{h.angle}</span>
-                    <span style={{fontSize:9,color:"var(--t3)",fontFamily:"var(--fm)"}}>{h.date}</span>
+        <div className="card" style={{ padding: 14 }}>
+          <SH>HISTORY <span className="tag" style={{ marginLeft: 4 }}>{hist.length}</span></SH>
+          {hist.length === 0 ? <div style={{ color: "var(--t3)", fontSize: 11, fontFamily: "var(--fm)", textAlign: "center", padding: "18px 0" }}>No history yet.</div> : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 5, maxHeight: 280, overflowY: "auto" }}>
+              {hist.map((h, i) => (
+                <div key={i} onClick={() => setOutput(h.result)} style={{ padding: "7px 9px", background: "var(--s2)", borderRadius: 4, cursor: "pointer", border: "1px solid var(--b1)" }}>
+                  <div style={{ fontSize: 12, fontWeight: 500, marginBottom: 2, lineHeight: 1.3 }}>{h.topic}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 9, color: "var(--t3)", fontFamily: "var(--fm)" }}>{h.angle}</span>
+                    <span style={{ fontSize: 9, color: "var(--t3)", fontFamily: "var(--fm)" }}>{h.date}</span>
                   </div>
                 </div>
               ))}
@@ -1044,16 +1046,16 @@ function ContentGen({platform, notify, cfg}) {
           )}
         </div>
       </div>
-      {output&&(
-        <div className="card" style={{padding:16,borderLeft:`3px solid ${cfg.agents.PULSE.color}`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:9}}>
-              <Avatar id="PULSE" size={24} cfg={cfg}/>
-              <span style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:cfg.agents.PULSE.color}}>{cfg.agents.PULSE.name} OUTPUT</span>
+      {output && (
+        <div className="card" style={{ padding: 16, borderLeft: `3px solid ${cfg.agents.PULSE.color}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+              <Avatar id="PULSE" size={24} cfg={cfg} />
+              <span style={{ fontFamily: "var(--fd)", fontSize: 12, fontWeight: 700, color: cfg.agents.PULSE.color }}>{cfg.agents.PULSE.name} OUTPUT</span>
             </div>
-            <button className="btn btn-g" onClick={()=>navigator.clipboard?.writeText(output)} style={{fontSize:10,padding:"4px 10px"}}>COPY ALL</button>
+            <button className="btn btn-g" onClick={() => navigator.clipboard?.writeText(output)} style={{ fontSize: 10, padding: "4px 10px" }}>COPY ALL</button>
           </div>
-          <pre style={{fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"var(--t1)",fontFamily:"var(--fb)"}}>{output}</pre>
+          <pre style={{ fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", color: "var(--t1)", fontFamily: "var(--fb)" }}>{output}</pre>
         </div>
       )}
     </div>
@@ -1063,90 +1065,90 @@ function ContentGen({platform, notify, cfg}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // TASK BOARD — persistent
 // ─────────────────────────────────────────────────────────────────────────────
-function TaskBoard({tasks, setTasks, notify, cfg}) {
+function TaskBoard({ tasks, setTasks, notify, cfg }) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({title:"",agent:"APEX",priority:"medium",desc:"",due:""});
+  const [form, setForm] = useState({ title: "", agent: "APEX", priority: "medium", desc: "", due: "" });
 
-  const add=()=>{
-    if(!form.title.trim()) return;
-    const t={...form,id:`t${Date.now()}`,status:"backlog",created:new Date().toISOString().split("T")[0]};
-    setTasks(p=>[...p,t]); setForm({title:"",agent:"APEX",priority:"medium",desc:"",due:""}); setOpen(false);
+  const add = () => {
+    if (!form.title.trim()) return;
+    const t = { ...form, id: `t${Date.now()}`, status: "backlog", created: new Date().toISOString().split("T")[0] };
+    setTasks(p => [...p, t]); setForm({ title: "", agent: "APEX", priority: "medium", desc: "", due: "" }); setOpen(false);
     notify(`Task "${form.title}" added.`);
   };
-  const move=(id,st)=>setTasks(p=>p.map(t=>t.id===id?{...t,status:st}:t));
-  const del=(id)=>setTasks(p=>p.filter(t=>t.id!==id));
+  const move = (id, st) => setTasks(p => p.map(t => t.id === id ? { ...t, status: st } : t));
+  const del = (id) => setTasks(p => p.filter(t => t.id !== id));
 
-  const cols=[
-    {k:"backlog",l:"BACKLOG",ac:"var(--t3)",items:tasks.filter(t=>t.status==="backlog")},
-    {k:"in_progress",l:"IN PROGRESS",ac:"var(--amber)",items:tasks.filter(t=>t.status==="in_progress")},
-    {k:"completed",l:"COMPLETED",ac:"var(--green)",items:tasks.filter(t=>t.status==="completed")},
+  const cols = [
+    { k: "backlog", l: "BACKLOG", ac: "var(--t3)", items: tasks.filter(t => t.status === "backlog") },
+    { k: "in_progress", l: "IN PROGRESS", ac: "var(--amber)", items: tasks.filter(t => t.status === "in_progress") },
+    { k: "completed", l: "COMPLETED", ac: "var(--green)", items: tasks.filter(t => t.status === "completed") },
   ];
 
   return (
     <div className="fu">
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
         <div>
-          <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Task Board</h1>
-          <p style={{color:"var(--t2)",fontSize:13}}>{tasks.length} tasks across all agents.</p>
+          <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Task Board</h1>
+          <p style={{ color: "var(--t2)", fontSize: 13 }}>{tasks.length} tasks across all agents.</p>
         </div>
-        <button className="btn btn-a" onClick={()=>setOpen(p=>!p)}>+ NEW TASK</button>
+        <button className="btn btn-a" onClick={() => setOpen(p => !p)}>+ NEW TASK</button>
       </div>
 
-      {open&&(
-        <div className="card fi" style={{padding:16,marginBottom:14,borderTop:"2px solid var(--a)"}}>
-          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:10,marginBottom:8}}>
-            <input className="input" placeholder="Task title *" value={form.title} onChange={e=>setForm(p=>({...p,title:e.target.value}))}/>
-            <select className="input" value={form.agent} onChange={e=>setForm(p=>({...p,agent:e.target.value}))}>
-              {Object.entries(cfg.agents).map(([id,a])=><option key={id} value={id}>{a.name} — {a.role}</option>)}
+      {open && (
+        <div className="card fi" style={{ padding: 16, marginBottom: 14, borderTop: "2px solid var(--a)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 10, marginBottom: 8 }}>
+            <input className="input" placeholder="Task title *" value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} />
+            <select className="input" value={form.agent} onChange={e => setForm(p => ({ ...p, agent: e.target.value }))}>
+              {Object.entries(cfg.agents).map(([id, a]) => <option key={id} value={id}>{a.name} — {a.role}</option>)}
             </select>
-            <select className="input" value={form.priority} onChange={e=>setForm(p=>({...p,priority:e.target.value}))}>
+            <select className="input" value={form.priority} onChange={e => setForm(p => ({ ...p, priority: e.target.value }))}>
               <option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option>
             </select>
-            <input 
-              className="input" 
-              type="date" 
-              value={form.due || new Date().toISOString().split("T")[0]} 
-              onChange={e=>setForm(p=>({...p,due:e.target.value}))} 
+            <input
+              className="input"
+              type="date"
+              value={form.due || new Date().toISOString().split("T")[0]}
+              onChange={e => setForm(p => ({ ...p, due: e.target.value }))}
               title="Due date"
-              style={{colorScheme: "dark"}} 
+              style={{ colorScheme: "dark" }}
             />
           </div>
-          <textarea className="input" placeholder="Description..." value={form.desc} onChange={e=>setForm(p=>({...p,desc:e.target.value}))} style={{marginBottom:10,height:58}}/>
-          <div style={{display:"flex",gap:8}}>
+          <textarea className="input" placeholder="Description..." value={form.desc} onChange={e => setForm(p => ({ ...p, desc: e.target.value }))} style={{ marginBottom: 10, height: 58 }} />
+          <div style={{ display: "flex", gap: 8 }}>
             <button className="btn btn-a" onClick={add}>CREATE</button>
-            <button className="btn btn-g" onClick={()=>setOpen(false)}>CANCEL</button>
+            <button className="btn btn-g" onClick={() => setOpen(false)}>CANCEL</button>
           </div>
         </div>
       )}
 
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
-        {cols.map(col=>(
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+        {cols.map(col => (
           <div key={col.k} className="card">
-            <div style={{padding:"9px 12px",borderBottom:"1px solid var(--b1)",display:"flex",justifyContent:"space-between"}}>
-              <span style={{fontSize:9,fontFamily:"var(--fm)",color:col.ac,letterSpacing:".1em"}}>{col.l}</span>
-              <span style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:800,color:col.ac}}>{col.items.length}</span>
+            <div style={{ padding: "9px 12px", borderBottom: "1px solid var(--b1)", display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 9, fontFamily: "var(--fm)", color: col.ac, letterSpacing: ".1em" }}>{col.l}</span>
+              <span style={{ fontFamily: "var(--fd)", fontSize: 12, fontWeight: 800, color: col.ac }}>{col.items.length}</span>
             </div>
-            <div style={{padding:8,display:"flex",flexDirection:"column",gap:7,minHeight:160}}>
-              {col.items.length===0&&<div style={{textAlign:"center",color:"var(--t3)",fontSize:10,padding:"20px 0",fontFamily:"var(--fm)"}}>— empty —</div>}
-              {col.items.map(task=>(
-                <div key={task.id} className="kcard" style={{borderLeft:`3px solid ${cfg.agents[task.agent]?.color||"#fff"}`}}>
-                  <div style={{fontSize:12,fontWeight:600,marginBottom:5,lineHeight:1.3}}>{task.title}</div>
-                  {task.desc&&<div style={{fontSize:11,color:"var(--t2)",marginBottom:6,lineHeight:1.4}}>{task.desc}</div>}
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}}>
-                    <span style={{fontSize:9,fontFamily:"var(--fm)",color:cfg.agents[task.agent]?.color,fontWeight:600}}>{cfg.agents[task.agent]?.name||task.agent}</span>
-                    <span className={`tag ${task.priority==="high"?"tred":task.priority==="medium"?"tamb":""}`}>{task.priority}</span>
+            <div style={{ padding: 8, display: "flex", flexDirection: "column", gap: 7, minHeight: 160 }}>
+              {col.items.length === 0 && <div style={{ textAlign: "center", color: "var(--t3)", fontSize: 10, padding: "20px 0", fontFamily: "var(--fm)" }}>— empty —</div>}
+              {col.items.map(task => (
+                <div key={task.id} className="kcard" style={{ borderLeft: `3px solid ${cfg.agents[task.agent]?.color || "#fff"}` }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 5, lineHeight: 1.3 }}>{task.title}</div>
+                  {task.desc && <div style={{ fontSize: 11, color: "var(--t2)", marginBottom: 6, lineHeight: 1.4 }}>{task.desc}</div>}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
+                    <span style={{ fontSize: 9, fontFamily: "var(--fm)", color: cfg.agents[task.agent]?.color, fontWeight: 600 }}>{cfg.agents[task.agent]?.name || task.agent}</span>
+                    <span className={`tag ${task.priority === "high" ? "tred" : task.priority === "medium" ? "tamb" : ""}`}>{task.priority}</span>
                   </div>
-                  {task.due&&(()=>{
-                    const isOverdue = col.k!=="completed" && new Date(task.due) < new Date(new Date().toDateString());
-                    return <div style={{fontSize:9,fontFamily:"var(--fm)",color:isOverdue?"var(--red)":"var(--t3)",marginBottom:6,display:"flex",alignItems:"center",gap:4}}>
-                      {isOverdue&&<span style={{color:"var(--red)"}}>⚠</span>}DUE {task.due}
+                  {task.due && (() => {
+                    const isOverdue = col.k !== "completed" && new Date(task.due) < new Date(new Date().toDateString());
+                    return <div style={{ fontSize: 9, fontFamily: "var(--fm)", color: isOverdue ? "var(--red)" : "var(--t3)", marginBottom: 6, display: "flex", alignItems: "center", gap: 4 }}>
+                      {isOverdue && <span style={{ color: "var(--red)" }}>⚠</span>}DUE {task.due}
                     </div>;
                   })()}
-                  <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
-                    {col.k!=="backlog"&&<button className="btn btn-g" onClick={()=>move(task.id,"backlog")} style={{fontSize:9,padding:"2px 7px",borderRadius:3}}>← BL</button>}
-                    {col.k!=="in_progress"&&<button className="btn btn-g" onClick={()=>move(task.id,"in_progress")} style={{fontSize:9,padding:"2px 7px",borderRadius:3,color:"var(--amber)",borderColor:"rgba(255,152,0,.2)"}}>▶ WIP</button>}
-                    {col.k!=="completed"&&<button className="btn btn-g" onClick={()=>move(task.id,"completed")} style={{fontSize:9,padding:"2px 7px",borderRadius:3,color:"var(--green)",borderColor:"rgba(0,230,118,.2)"}}>✓ DONE</button>}
-                    <button className="btn btn-g" onClick={()=>del(task.id)} style={{fontSize:9,padding:"2px 7px",borderRadius:3,color:"var(--red)",borderColor:"rgba(255,59,59,.2)"}}>✕</button>
+                  <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                    {col.k !== "backlog" && <button className="btn btn-g" onClick={() => move(task.id, "backlog")} style={{ fontSize: 9, padding: "2px 7px", borderRadius: 3 }}>← BL</button>}
+                    {col.k !== "in_progress" && <button className="btn btn-g" onClick={() => move(task.id, "in_progress")} style={{ fontSize: 9, padding: "2px 7px", borderRadius: 3, color: "var(--amber)", borderColor: "rgba(255,152,0,.2)" }}>▶ WIP</button>}
+                    {col.k !== "completed" && <button className="btn btn-g" onClick={() => move(task.id, "completed")} style={{ fontSize: 9, padding: "2px 7px", borderRadius: 3, color: "var(--green)", borderColor: "rgba(0,230,118,.2)" }}>✓ DONE</button>}
+                    <button className="btn btn-g" onClick={() => del(task.id)} style={{ fontSize: 9, padding: "2px 7px", borderRadius: 3, color: "var(--red)", borderColor: "rgba(255,59,59,.2)" }}>✕</button>
                   </div>
                 </div>
               ))}
@@ -1161,84 +1163,84 @@ function TaskBoard({tasks, setTasks, notify, cfg}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // SALES HUB
 // ─────────────────────────────────────────────────────────────────────────────
-function SalesHub({notify, cfg}) {
+function SalesHub({ notify, cfg }) {
   const [topic, setTopic] = useState("");
-  const [type, setType]   = useState("dm");
+  const [type, setType] = useState("dm");
   const [output, setOutput] = useState("");
-  const [loading, setLoad]  = useState(false);
-  const [err, setErr]       = useState("");
-  const [hist, setHist]     = useState([]);
+  const [loading, setLoad] = useState(false);
+  const [err, setErr] = useState("");
+  const [hist, setHist] = useState([]);
   const loaded = useRef(false);
 
-  useEffect(()=>{ sGet("apex_saleshub_hist",[]).then(h=>{ setHist(h||[]); loaded.current=true; }); },[]);
-  useEffect(()=>{ if(loaded.current) sSet("apex_saleshub_hist", hist); },[hist]);
+  useEffect(() => { sGet("apex_saleshub_hist", []).then(h => { setHist(h || []); loaded.current = true; }); }, []);
+  useEffect(() => { if (loaded.current) sSet("apex_saleshub_hist", hist); }, [hist]);
 
-  const types=[
-    {k:"dm",l:"DM Sequence"},{k:"vsl",l:"VSL Script"},{k:"objection",l:"Objections"},
-    {k:"email",l:"Email Sequence"},{k:"offer",l:"Offer Builder"}
+  const types = [
+    { k: "dm", l: "DM Sequence" }, { k: "vsl", l: "VSL Script" }, { k: "objection", l: "Objections" },
+    { k: "email", l: "Email Sequence" }, { k: "offer", l: "Offer Builder" }
   ];
-  const prompts={
-    dm:`Write a 5-part DM follow-up sequence for: "${topic}". Day 1, Day 3, Day 7, Day 14, Day 30. Under 80 words each. Vary: casual → value → offer → urgency → final.`,
-    vsl:`Write a complete VSL for: "${topic}". HOOK | PROBLEM | STORY | SOLUTION | PROOF | OFFER | GUARANTEE | CTA. Stage directions included.`,
-    objection:`Handle the 7 most common objections for "${topic}": Too expensive / Need to think / Wrong time / Tried before / Need to ask partner / DIY / How do I know it works. Word-for-word responses.`,
-    email:`7-email sequence for "${topic}". Subject + preview for each. Spread over 21 days. Mix: value, story, social proof, offer. One goal per email.`,
-    offer:`Build an irresistible offer for: "${topic}". Core promise, deliverables, price stack, guarantee, scarcity, one-liner. Make it undeniable.`,
+  const prompts = {
+    dm: `Write a 5-part DM follow-up sequence for: "${topic}". Day 1, Day 3, Day 7, Day 14, Day 30. Under 80 words each. Vary: casual → value → offer → urgency → final.`,
+    vsl: `Write a complete VSL for: "${topic}". HOOK | PROBLEM | STORY | SOLUTION | PROOF | OFFER | GUARANTEE | CTA. Stage directions included.`,
+    objection: `Handle the 7 most common objections for "${topic}": Too expensive / Need to think / Wrong time / Tried before / Need to ask partner / DIY / How do I know it works. Word-for-word responses.`,
+    email: `7-email sequence for "${topic}". Subject + preview for each. Spread over 21 days. Mix: value, story, social proof, offer. One goal per email.`,
+    offer: `Build an irresistible offer for: "${topic}". Core promise, deliverables, price stack, guarantee, scarcity, one-liner. Make it undeniable.`,
   };
 
-  const gen = async() => {
-    if(!topic.trim()||loading) return;
+  const gen = async () => {
+    if (!topic.trim() || loading) return;
     setLoad(true); setErr(""); setOutput("");
     try {
-      const r = await claude(getSysPrompt("CIPHER",cfg),[{role:"user",content:prompts[type]}]);
+      const r = await claude(getSysPrompt("CIPHER", cfg), [{ role: "user", content: prompts[type] }]);
       setOutput(r);
-      const entry = {topic, type, date:new Date().toLocaleDateString(), result:r};
-      setHist(p=>[entry,...p.slice(0,14)]);
+      const entry = { topic, type, date: new Date().toLocaleDateString(), result: r };
+      setHist(p => [entry, ...p.slice(0, 14)]);
       notify(`${cfg.agents.CIPHER.name} generated your ${type}!`);
-    } catch(e){ setErr(e.message); }
+    } catch (e) { setErr(e.message); }
     setLoad(false);
   };
 
   return (
     <div className="fu">
-      <div style={{marginBottom:22}}>
-        <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Sales Hub</h1>
-        <p style={{color:"var(--t2)",fontSize:13}}>Powered by {cfg.agents.CIPHER.name} — Sales & Revenue.</p>
+      <div style={{ marginBottom: 22 }}>
+        <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Sales Hub</h1>
+        <p style={{ color: "var(--t2)", fontSize: 13 }}>Powered by {cfg.agents.CIPHER.name} — Sales & Revenue.</p>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 260px",gap:12,marginBottom:12}}>
-        <div className="card" style={{padding:16}}>
-          <div style={{display:"flex",gap:5,marginBottom:12,flexWrap:"wrap"}}>
-            {types.map(t=>(
-              <button key={t.k} onClick={()=>setType(t.k)} style={{
-                padding:"5px 13px",borderRadius:4,fontSize:11,fontFamily:"var(--fb)",fontWeight:500,
-                background:type===t.k?"rgba(255,59,59,.12)":"var(--s3)",
-                color:type===t.k?"var(--red)":"var(--t2)",
-                border:`1px solid ${type===t.k?"rgba(255,59,59,.3)":"var(--b1)"}`,
-                cursor:"pointer",transition:"all .12s",
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 260px", gap: 12, marginBottom: 12 }}>
+        <div className="card" style={{ padding: 16 }}>
+          <div style={{ display: "flex", gap: 5, marginBottom: 12, flexWrap: "wrap" }}>
+            {types.map(t => (
+              <button key={t.k} onClick={() => setType(t.k)} style={{
+                padding: "5px 13px", borderRadius: 4, fontSize: 11, fontFamily: "var(--fb)", fontWeight: 500,
+                background: type === t.k ? "rgba(255,59,59,.12)" : "var(--s3)",
+                color: type === t.k ? "var(--red)" : "var(--t2)",
+                border: `1px solid ${type === t.k ? "rgba(255,59,59,.3)" : "var(--b1)"}`,
+                cursor: "pointer", transition: "all .12s",
               }}>{t.l}</button>
             ))}
           </div>
-          <div style={{display:"flex",gap:8}}>
-            <input className="input" placeholder="Product / offer / context..." value={topic} onChange={e=>setTopic(e.target.value)} style={{flex:1}} onKeyDown={e=>e.key==="Enter"&&gen()}/>
-            <button className="btn btn-a" onClick={gen} disabled={loading||!topic.trim()}>
-              {loading?<><Spin color="#060500"/>WRITING</>:"GENERATE →"}
+          <div style={{ display: "flex", gap: 8 }}>
+            <input className="input" placeholder="Product / offer / context..." value={topic} onChange={e => setTopic(e.target.value)} style={{ flex: 1 }} onKeyDown={e => e.key === "Enter" && gen()} />
+            <button className="btn btn-a" onClick={gen} disabled={loading || !topic.trim()}>
+              {loading ? <><Spin color="#060500" />WRITING</> : "GENERATE →"}
             </button>
           </div>
-          {err&&<div style={{color:"var(--red)",fontSize:11,marginTop:8,fontFamily:"var(--fm)"}}>⚠ {err}</div>}
+          {err && <div style={{ color: "var(--red)", fontSize: 11, marginTop: 8, fontFamily: "var(--fm)" }}>⚠ {err}</div>}
         </div>
 
         {/* History panel */}
-        <div className="card" style={{padding:14}}>
-          <SH>HISTORY <span className="tag" style={{marginLeft:4}}>{hist.length}</span></SH>
-          {hist.length===0 ? (
-            <div style={{color:"var(--t3)",fontSize:11,fontFamily:"var(--fm)",textAlign:"center",padding:"18px 0"}}>No history yet.</div>
+        <div className="card" style={{ padding: 14 }}>
+          <SH>HISTORY <span className="tag" style={{ marginLeft: 4 }}>{hist.length}</span></SH>
+          {hist.length === 0 ? (
+            <div style={{ color: "var(--t3)", fontSize: 11, fontFamily: "var(--fm)", textAlign: "center", padding: "18px 0" }}>No history yet.</div>
           ) : (
-            <div style={{display:"flex",flexDirection:"column",gap:5,maxHeight:200,overflowY:"auto"}}>
-              {hist.map((h,i)=>(
-                <div key={i} onClick={()=>setOutput(h.result)} style={{padding:"7px 9px",background:"var(--s2)",borderRadius:4,cursor:"pointer",border:"1px solid var(--b1)"}}>
-                  <div style={{fontSize:11,fontWeight:500,marginBottom:2,lineHeight:1.3}}>{h.topic}</div>
-                  <div style={{display:"flex",justifyContent:"space-between"}}>
-                    <span style={{fontSize:9,color:"var(--red)",fontFamily:"var(--fm)"}}>{h.type}</span>
-                    <span style={{fontSize:9,color:"var(--t3)",fontFamily:"var(--fm)"}}>{h.date}</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 5, maxHeight: 200, overflowY: "auto" }}>
+              {hist.map((h, i) => (
+                <div key={i} onClick={() => setOutput(h.result)} style={{ padding: "7px 9px", background: "var(--s2)", borderRadius: 4, cursor: "pointer", border: "1px solid var(--b1)" }}>
+                  <div style={{ fontSize: 11, fontWeight: 500, marginBottom: 2, lineHeight: 1.3 }}>{h.topic}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 9, color: "var(--red)", fontFamily: "var(--fm)" }}>{h.type}</span>
+                    <span style={{ fontSize: 9, color: "var(--t3)", fontFamily: "var(--fm)" }}>{h.date}</span>
                   </div>
                 </div>
               ))}
@@ -1246,16 +1248,16 @@ function SalesHub({notify, cfg}) {
           )}
         </div>
       </div>
-      {output&&(
-        <div className="card" style={{padding:16,borderLeft:`3px solid ${cfg.agents.CIPHER.color}`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:9}}>
-              <Avatar id="CIPHER" size={24} cfg={cfg}/>
-              <span style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:cfg.agents.CIPHER.color}}>{cfg.agents.CIPHER.name} OUTPUT</span>
+      {output && (
+        <div className="card" style={{ padding: 16, borderLeft: `3px solid ${cfg.agents.CIPHER.color}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+              <Avatar id="CIPHER" size={24} cfg={cfg} />
+              <span style={{ fontFamily: "var(--fd)", fontSize: 12, fontWeight: 700, color: cfg.agents.CIPHER.color }}>{cfg.agents.CIPHER.name} OUTPUT</span>
             </div>
-            <button className="btn btn-g" onClick={()=>navigator.clipboard?.writeText(output)} style={{fontSize:10,padding:"4px 10px"}}>COPY</button>
+            <button className="btn btn-g" onClick={() => navigator.clipboard?.writeText(output)} style={{ fontSize: 10, padding: "4px 10px" }}>COPY</button>
           </div>
-          <pre style={{fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"var(--t1)",fontFamily:"var(--fb)"}}>{output}</pre>
+          <pre style={{ fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", color: "var(--t1)", fontFamily: "var(--fb)" }}>{output}</pre>
         </div>
       )}
     </div>
@@ -1265,62 +1267,62 @@ function SalesHub({notify, cfg}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // FUNNEL
 // ─────────────────────────────────────────────────────────────────────────────
-function Funnel({notify, cfg}) {
-  const [offer, setOffer]   = useState("");
+function Funnel({ notify, cfg }) {
+  const [offer, setOffer] = useState("");
   const [output, setOutput] = useState("");
-  const [loading, setLoad]  = useState(false);
-  const [err, setErr]       = useState("");
+  const [loading, setLoad] = useState(false);
+  const [err, setErr] = useState("");
 
-  const build = async() => {
-    if(!offer.trim()||loading) return;
+  const build = async () => {
+    if (!offer.trim() || loading) return;
     setLoad(true); setErr(""); setOutput("");
     try {
-      const r = await claude(getSysPrompt("CIPHER",cfg),[{role:"user",content:`Design a complete high-converting funnel for: "${offer}".\n\n## FUNNEL ARCHITECTURE\n## LEAD MAGNET\n## LANDING PAGE STRUCTURE\n## EMAIL SEQUENCE (7 emails with subject lines)\n## OFFER STACK (upsells/downsells)\n## TRAFFIC STRATEGY\n## 90-DAY REVENUE PROJECTION (3 scenarios)\n\nMake it executable from day one.`}]);
-      setOutput(r); notify("Funnel architected by "+cfg.agents.CIPHER.name+"!");
-    } catch(e){ setErr(e.message); }
+      const r = await claude(getSysPrompt("CIPHER", cfg), [{ role: "user", content: `Design a complete high-converting funnel for: "${offer}".\n\n## FUNNEL ARCHITECTURE\n## LEAD MAGNET\n## LANDING PAGE STRUCTURE\n## EMAIL SEQUENCE (7 emails with subject lines)\n## OFFER STACK (upsells/downsells)\n## TRAFFIC STRATEGY\n## 90-DAY REVENUE PROJECTION (3 scenarios)\n\nMake it executable from day one.` }]);
+      setOutput(r); notify("Funnel architected by " + cfg.agents.CIPHER.name + "!");
+    } catch (e) { setErr(e.message); }
     setLoad(false);
   };
 
   return (
     <div className="fu">
-      <div style={{marginBottom:22}}>
-        <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Funnel Builder</h1>
-        <p style={{color:"var(--t2)",fontSize:13}}>AI-architected revenue funnels. Powered by {cfg.agents.CIPHER.name}.</p>
+      <div style={{ marginBottom: 22 }}>
+        <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Funnel Builder</h1>
+        <p style={{ color: "var(--t2)", fontSize: 13 }}>AI-architected revenue funnels. Powered by {cfg.agents.CIPHER.name}.</p>
       </div>
-      <div className="card" style={{padding:16,marginBottom:12}}>
-        <div style={{display:"flex",gap:8}}>
-          <input className="input" placeholder="Describe your offer... e.g. $5K/mo AI systems for 6-figure creators" value={offer} onChange={e=>setOffer(e.target.value)} style={{flex:1}} onKeyDown={e=>e.key==="Enter"&&build()}/>
-          <button className="btn btn-a" onClick={build} disabled={loading||!offer.trim()}>
-            {loading?<><Spin color="#060500"/>BUILDING</>:"BUILD →"}
+      <div className="card" style={{ padding: 16, marginBottom: 12 }}>
+        <div style={{ display: "flex", gap: 8 }}>
+          <input className="input" placeholder="Describe your offer... e.g. $5K/mo AI systems for 6-figure creators" value={offer} onChange={e => setOffer(e.target.value)} style={{ flex: 1 }} onKeyDown={e => e.key === "Enter" && build()} />
+          <button className="btn btn-a" onClick={build} disabled={loading || !offer.trim()}>
+            {loading ? <><Spin color="#060500" />BUILDING</> : "BUILD →"}
           </button>
         </div>
-        {err&&<div style={{color:"var(--red)",fontSize:11,marginTop:8,fontFamily:"var(--fm)"}}>⚠ {err}</div>}
+        {err && <div style={{ color: "var(--red)", fontSize: 11, marginTop: 8, fontFamily: "var(--fm)" }}>⚠ {err}</div>}
       </div>
-      {!output&&!loading&&(
-        <div className="card" style={{padding:"44px 20px",textAlign:"center"}}>
-          <div style={{fontSize:38,marginBottom:10,filter:`drop-shadow(0 0 16px ${cfg.agents.CIPHER.color})`}}>{cfg.agents.CIPHER.icon}</div>
-          <div style={{fontFamily:"var(--fd)",fontSize:17,fontWeight:800,marginBottom:6}}>Funnel Architect</div>
-          <div style={{color:"var(--t2)",fontSize:13,maxWidth:360,margin:"0 auto",lineHeight:1.6}}>Describe your offer above and {cfg.agents.CIPHER.name} will architect a complete revenue funnel — from traffic to closed client.</div>
+      {!output && !loading && (
+        <div className="card" style={{ padding: "44px 20px", textAlign: "center" }}>
+          <div style={{ fontSize: 38, marginBottom: 10, filter: `drop-shadow(0 0 16px ${cfg.agents.CIPHER.color})` }}>{cfg.agents.CIPHER.icon}</div>
+          <div style={{ fontFamily: "var(--fd)", fontSize: 17, fontWeight: 800, marginBottom: 6 }}>Funnel Architect</div>
+          <div style={{ color: "var(--t2)", fontSize: 13, maxWidth: 360, margin: "0 auto", lineHeight: 1.6 }}>Describe your offer above and {cfg.agents.CIPHER.name} will architect a complete revenue funnel — from traffic to closed client.</div>
         </div>
       )}
-      {loading&&(
-        <div className="card" style={{padding:"44px 20px",textAlign:"center"}}>
-          <div style={{display:"flex",justifyContent:"center",gap:7,marginBottom:14}}>
-            {[0,1,2,3,4].map(i=><div key={i} style={{width:7,height:7,borderRadius:"50%",background:cfg.agents.CIPHER.color,animation:`pulse 1s ease ${i*.12}s infinite`}}/>)}
+      {loading && (
+        <div className="card" style={{ padding: "44px 20px", textAlign: "center" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 7, marginBottom: 14 }}>
+            {[0, 1, 2, 3, 4].map(i => <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: cfg.agents.CIPHER.color, animation: `pulse 1s ease ${i * .12}s infinite` }} />)}
           </div>
-          <div style={{fontFamily:"var(--fd)",fontSize:14,color:cfg.agents.CIPHER.color}}>{cfg.agents.CIPHER.name} architecting your funnel...</div>
+          <div style={{ fontFamily: "var(--fd)", fontSize: 14, color: cfg.agents.CIPHER.color }}>{cfg.agents.CIPHER.name} architecting your funnel...</div>
         </div>
       )}
-      {output&&(
-        <div className="card" style={{padding:16,borderLeft:`3px solid ${cfg.agents.CIPHER.color}`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:9}}>
-              <Avatar id="CIPHER" size={24} cfg={cfg}/>
-              <span style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:cfg.agents.CIPHER.color}}>FUNNEL ARCHITECTURE</span>
+      {output && (
+        <div className="card" style={{ padding: 16, borderLeft: `3px solid ${cfg.agents.CIPHER.color}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+              <Avatar id="CIPHER" size={24} cfg={cfg} />
+              <span style={{ fontFamily: "var(--fd)", fontSize: 12, fontWeight: 700, color: cfg.agents.CIPHER.color }}>FUNNEL ARCHITECTURE</span>
             </div>
-            <button className="btn btn-g" onClick={()=>navigator.clipboard?.writeText(output)} style={{fontSize:10,padding:"4px 10px"}}>COPY</button>
+            <button className="btn btn-g" onClick={() => navigator.clipboard?.writeText(output)} style={{ fontSize: 10, padding: "4px 10px" }}>COPY</button>
           </div>
-          <pre style={{fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"var(--t1)",fontFamily:"var(--fb)"}}>{output}</pre>
+          <pre style={{ fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", color: "var(--t1)", fontFamily: "var(--fb)" }}>{output}</pre>
         </div>
       )}
     </div>
@@ -1331,127 +1333,127 @@ function Funnel({notify, cfg}) {
 // CALLS
 // ─────────────────────────────────────────────────────────────────────────────
 const DEFAULT_CALLS = [
-  {id:"c1",name:"Chad Larson — Client Call",     date:"2026-02-29",outcome:"closed",   ctx:"Aligned on marketing strategy and AI app development. Enrolled at $4K/mo."},
-  {id:"c2",name:"Impromptu Zoom — Prospects",    date:"2026-02-22",outcome:"follow-up",ctx:"AI-driven affiliate management collaboration. Budget $3-5K range. Needs nurturing."},
-  {id:"c3",name:"Meeting — AI Consultant",       date:"2026-02-18",outcome:"closed",   ctx:"Client comms and automation. $10K package. Accepted. Starts next week."},
-  {id:"c4",name:"Da Edgar — Discovery",          date:"2026-02-15",outcome:"follow-up",ctx:"Solo product launch. Interested but wants case studies. Send by Friday."},
-  {id:"c5",name:"Tom Pennington — Strategy",     date:"2026-02-12",outcome:"no-close", ctx:"Business coaching. Great rapport, budget mismatch. Add to 90-day nurture."},
+  { id: "c1", name: "Chad Larson — Client Call", date: "2026-02-29", outcome: "closed", ctx: "Aligned on marketing strategy and AI app development. Enrolled at $4K/mo." },
+  { id: "c2", name: "Impromptu Zoom — Prospects", date: "2026-02-22", outcome: "follow-up", ctx: "AI-driven affiliate management collaboration. Budget $3-5K range. Needs nurturing." },
+  { id: "c3", name: "Meeting — AI Consultant", date: "2026-02-18", outcome: "closed", ctx: "Client comms and automation. $10K package. Accepted. Starts next week." },
+  { id: "c4", name: "Da Edgar — Discovery", date: "2026-02-15", outcome: "follow-up", ctx: "Solo product launch. Interested but wants case studies. Send by Friday." },
+  { id: "c5", name: "Tom Pennington — Strategy", date: "2026-02-12", outcome: "no-close", ctx: "Business coaching. Great rapport, budget mismatch. Add to 90-day nurture." },
 ];
 
-const OC = {closed:{cls:"tgreen",l:"CLOSED"},"follow-up":{cls:"tamb",l:"FOLLOW-UP"},"no-close":{cls:"tred",l:"NO-CLOSE"},analyzed:{cls:"tc",l:"ANALYZED"}};
+const OC = { closed: { cls: "tgreen", l: "CLOSED" }, "follow-up": { cls: "tamb", l: "FOLLOW-UP" }, "no-close": { cls: "tred", l: "NO-CLOSE" }, analyzed: { cls: "tc", l: "ANALYZED" } };
 
-function Calls({notify, cfg}) {
-  const [calls, setCalls]     = useState(null);
-  const [selId, setSelId]     = useState(null);
-  const [analyses, setAn]     = useState({});
-  const [analyzing, setAnaing]= useState(false);
+function Calls({ notify, cfg }) {
+  const [calls, setCalls] = useState(null);
+  const [selId, setSelId] = useState(null);
+  const [analyses, setAn] = useState({});
+  const [analyzing, setAnaing] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
-  const [form, setForm]       = useState({name:"",date:new Date().toISOString().split("T")[0],outcome:"follow-up",ctx:""});
-  const [custom, setCust]     = useState("");
+  const [form, setForm] = useState({ name: "", date: new Date().toISOString().split("T")[0], outcome: "follow-up", ctx: "" });
+  const [custom, setCust] = useState("");
   const [showCust, setShowCust] = useState(false);
   const [custErr, setCustErr] = useState("");
   const loaded = useRef(false);
 
-  useEffect(()=>{
-    sGet("apex_calls_v1", DEFAULT_CALLS).then(d=>{
+  useEffect(() => {
+    sGet("apex_calls_v1", DEFAULT_CALLS).then(d => {
       setCalls(d && d.length ? d : DEFAULT_CALLS);
       loaded.current = true;
     });
-  },[]);
-  useEffect(()=>{ if(loaded.current && calls) sSet("apex_calls_v1", calls); },[calls]);
+  }, []);
+  useEffect(() => { if (loaded.current && calls) sSet("apex_calls_v1", calls); }, [calls]);
 
-  const selCall = calls?.find(c=>c.id===selId) || null;
+  const selCall = calls?.find(c => c.id === selId) || null;
 
   const addCall = () => {
-    if(!form.name.trim()) return;
-    const c = {...form, id:`c${Date.now()}`};
-    setCalls(p=>[c,...(p||[])]);
-    setForm({name:"",date:new Date().toISOString().split("T")[0],outcome:"follow-up",ctx:""});
+    if (!form.name.trim()) return;
+    const c = { ...form, id: `c${Date.now()}` };
+    setCalls(p => [c, ...(p || [])]);
+    setForm({ name: "", date: new Date().toISOString().split("T")[0], outcome: "follow-up", ctx: "" });
     setAddOpen(false);
     notify("Call logged!");
   };
 
   const delCall = (id) => {
-    setCalls(p=>p.filter(c=>c.id!==id));
-    if(selId===id) setSelId(null);
+    setCalls(p => p.filter(c => c.id !== id));
+    if (selId === id) setSelId(null);
   };
 
-  const runAnalysis = async(call) => {
+  const runAnalysis = async (call) => {
     setAnaing(true);
     try {
       const r = await claude(
-        getSysPrompt("ORACLE",cfg),
-        [{role:"user",content:`Analyze this sales call for ${cfg.brandName}:\nCall: ${call.name}\nDate: ${call.date}\nOutcome: ${call.outcome}\nContext: ${call.ctx}\n\n## BUYING SIGNALS\n## OBJECTIONS RAISED\n## WHAT WENT WELL\n## WHAT TO IMPROVE\n## NEXT ACTION (specific + timeline)\n## FOLLOW-UP MESSAGE TEMPLATE`}]
+        getSysPrompt("ORACLE", cfg),
+        [{ role: "user", content: `Analyze this sales call for ${cfg.brandName}:\nCall: ${call.name}\nDate: ${call.date}\nOutcome: ${call.outcome}\nContext: ${call.ctx}\n\n## BUYING SIGNALS\n## OBJECTIONS RAISED\n## WHAT WENT WELL\n## WHAT TO IMPROVE\n## NEXT ACTION (specific + timeline)\n## FOLLOW-UP MESSAGE TEMPLATE` }]
       );
-      setAn(p=>({...p,[call.id]:r}));
-      notify("Call analyzed by "+cfg.agents.ORACLE.name+"!");
-    } catch(e){
-      setAn(p=>({...p,[call.id]:"⚠ Error: "+e.message}));
+      setAn(p => ({ ...p, [call.id]: r }));
+      notify("Call analyzed by " + cfg.agents.ORACLE.name + "!");
+    } catch (e) {
+      setAn(p => ({ ...p, [call.id]: "⚠ Error: " + e.message }));
     }
     setAnaing(false);
   };
 
   const selectCall = (call) => {
     setSelId(call.id);
-    if(!analyses[call.id]) runAnalysis(call);
+    if (!analyses[call.id]) runAnalysis(call);
   };
 
-  const analyzeCustom = async() => {
-    if(!custom.trim()) return;
+  const analyzeCustom = async () => {
+    if (!custom.trim()) return;
     setCustErr(""); setAnaing(true);
-    const tempId = "custom_"+Date.now();
-    const fake = {id:tempId, name:"Custom Transcript", date:new Date().toLocaleDateString(), outcome:"analyzed", ctx:custom};
+    const tempId = "custom_" + Date.now();
+    const fake = { id: tempId, name: "Custom Transcript", date: new Date().toLocaleDateString(), outcome: "analyzed", ctx: custom };
     setSelId(tempId);
     try {
       const r = await claude(
-        getSysPrompt("ORACLE",cfg),
-        [{role:"user",content:`Analyze this call transcript:\n\n${custom}\n\n## BUYING SIGNALS\n## OBJECTIONS\n## WINS\n## IMPROVEMENTS\n## NEXT ACTION`}]
+        getSysPrompt("ORACLE", cfg),
+        [{ role: "user", content: `Analyze this call transcript:\n\n${custom}\n\n## BUYING SIGNALS\n## OBJECTIONS\n## WINS\n## IMPROVEMENTS\n## NEXT ACTION` }]
       );
-      setAn(p=>({...p,[tempId]:r}));
+      setAn(p => ({ ...p, [tempId]: r }));
       setShowCust(false); setCust("");
       notify("Transcript analyzed!");
-    } catch(e){
-      setCustErr("⚠ "+e.message);
+    } catch (e) {
+      setCustErr("⚠ " + e.message);
       setSelId(null);
     }
     setAnaing(false);
   };
 
-  if(!calls) return <div style={{color:"var(--t2)",padding:40,textAlign:"center",fontFamily:"var(--fm)"}}>Loading calls...</div>;
+  if (!calls) return <div style={{ color: "var(--t2)", padding: 40, textAlign: "center", fontFamily: "var(--fm)" }}>Loading calls...</div>;
 
   return (
     <div className="fu">
       {/* Header */}
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
         <div>
-          <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Sales Calls</h1>
-          <p style={{color:"var(--t2)",fontSize:13}}>{cfg.agents.ORACLE.name} intelligence on every call.</p>
+          <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Sales Calls</h1>
+          <p style={{ color: "var(--t2)", fontSize: 13 }}>{cfg.agents.ORACLE.name} intelligence on every call.</p>
         </div>
-        <div style={{display:"flex",gap:8}}>
-          <button className="btn btn-g" onClick={()=>{ setShowCust(p=>!p); setCustErr(""); }} style={{fontSize:11}}>+ TRANSCRIPT</button>
-          <button className="btn btn-a" onClick={()=>setAddOpen(true)}>+ LOG CALL</button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="btn btn-g" onClick={() => { setShowCust(p => !p); setCustErr(""); }} style={{ fontSize: 11 }}>+ TRANSCRIPT</button>
+          <button className="btn btn-a" onClick={() => setAddOpen(true)}>+ LOG CALL</button>
         </div>
       </div>
 
       {/* Add call modal */}
       {addOpen && (
-        <div style={{position:"fixed",inset:0,zIndex:500,background:"rgba(5,7,13,.85)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}
-          onClick={e=>e.target===e.currentTarget&&setAddOpen(false)}>
-          <div className="card fu" style={{width:"100%",maxWidth:480,padding:24,borderTop:"3px solid var(--a)"}}>
-            <div style={{fontFamily:"var(--fd)",fontWeight:800,fontSize:16,marginBottom:16}}>Log New Call</div>
-            <div style={{display:"flex",flexDirection:"column",gap:10}}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 500, background: "rgba(5,7,13,.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+          onClick={e => e.target === e.currentTarget && setAddOpen(false)}>
+          <div className="card fu" style={{ width: "100%", maxWidth: 480, padding: 24, borderTop: "3px solid var(--a)" }}>
+            <div style={{ fontFamily: "var(--fd)", fontWeight: 800, fontSize: 16, marginBottom: 16 }}>Log New Call</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div>
-                <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>CALL NAME / PROSPECT</label>
-                <input className="input" autoFocus placeholder="e.g. Sarah Johnson — Discovery Call" value={form.name} onChange={e=>setForm(p=>({...p,name:e.target.value}))} onKeyDown={e=>e.key==="Enter"&&addCall()}/>
+                <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>CALL NAME / PROSPECT</label>
+                <input className="input" autoFocus placeholder="e.g. Sarah Johnson — Discovery Call" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} onKeyDown={e => e.key === "Enter" && addCall()} />
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 <div>
-                  <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>DATE</label>
-                  <input className="input" type="date" value={form.date} onChange={e=>setForm(p=>({...p,date:e.target.value}))}/>
+                  <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>DATE</label>
+                  <input className="input" type="date" value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))} />
                 </div>
                 <div>
-                  <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>OUTCOME</label>
-                  <select className="input" value={form.outcome} onChange={e=>setForm(p=>({...p,outcome:e.target.value}))}>
+                  <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>OUTCOME</label>
+                  <select className="input" value={form.outcome} onChange={e => setForm(p => ({ ...p, outcome: e.target.value }))}>
                     <option value="closed">Closed</option>
                     <option value="follow-up">Follow-up</option>
                     <option value="no-close">No-close</option>
@@ -1459,13 +1461,13 @@ function Calls({notify, cfg}) {
                 </div>
               </div>
               <div>
-                <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>CONTEXT / NOTES</label>
-                <textarea className="input" placeholder="What happened? Budget, objections, next steps..." value={form.ctx} onChange={e=>setForm(p=>({...p,ctx:e.target.value}))} style={{height:80}}/>
+                <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>CONTEXT / NOTES</label>
+                <textarea className="input" placeholder="What happened? Budget, objections, next steps..." value={form.ctx} onChange={e => setForm(p => ({ ...p, ctx: e.target.value }))} style={{ height: 80 }} />
               </div>
             </div>
-            <div style={{display:"flex",gap:8,marginTop:14}}>
-              <button className="btn btn-a" onClick={addCall} disabled={!form.name.trim()} style={{flex:1,justifyContent:"center",padding:"10px"}}>LOG CALL</button>
-              <button className="btn btn-g" onClick={()=>setAddOpen(false)} style={{padding:"10px 16px"}}>CANCEL</button>
+            <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+              <button className="btn btn-a" onClick={addCall} disabled={!form.name.trim()} style={{ flex: 1, justifyContent: "center", padding: "10px" }}>LOG CALL</button>
+              <button className="btn btn-g" onClick={() => setAddOpen(false)} style={{ padding: "10px 16px" }}>CANCEL</button>
             </div>
           </div>
         </div>
@@ -1473,76 +1475,76 @@ function Calls({notify, cfg}) {
 
       {/* Custom transcript */}
       {showCust && (
-        <div className="card fi" style={{padding:14,marginBottom:12,borderTop:"2px solid var(--cyan)"}}>
-          <div style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--cyan)",letterSpacing:".1em",marginBottom:8}}>PASTE TRANSCRIPT OR SUMMARY</div>
-          <textarea className="input" autoFocus placeholder="Paste your call transcript or notes here..." value={custom} onChange={e=>setCust(e.target.value)} style={{height:90,marginBottom:8}}/>
-          {custErr && <div style={{color:"var(--red)",fontSize:11,fontFamily:"var(--fm)",marginBottom:8}}>{custErr}</div>}
-          <div style={{display:"flex",gap:7}}>
-            <button className="btn btn-a" onClick={analyzeCustom} disabled={analyzing||!custom.trim()} style={{fontSize:11,flex:1,justifyContent:"center"}}>
-              {analyzing?<><Spin color="#060500"/>ANALYZING…</>:"ANALYZE →"}
+        <div className="card fi" style={{ padding: 14, marginBottom: 12, borderTop: "2px solid var(--cyan)" }}>
+          <div style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--cyan)", letterSpacing: ".1em", marginBottom: 8 }}>PASTE TRANSCRIPT OR SUMMARY</div>
+          <textarea className="input" autoFocus placeholder="Paste your call transcript or notes here..." value={custom} onChange={e => setCust(e.target.value)} style={{ height: 90, marginBottom: 8 }} />
+          {custErr && <div style={{ color: "var(--red)", fontSize: 11, fontFamily: "var(--fm)", marginBottom: 8 }}>{custErr}</div>}
+          <div style={{ display: "flex", gap: 7 }}>
+            <button className="btn btn-a" onClick={analyzeCustom} disabled={analyzing || !custom.trim()} style={{ fontSize: 11, flex: 1, justifyContent: "center" }}>
+              {analyzing ? <><Spin color="#060500" />ANALYZING…</> : "ANALYZE →"}
             </button>
-            <button className="btn btn-g" onClick={()=>{setShowCust(false);setCust("");setCustErr("");}} style={{fontSize:11}}>CANCEL</button>
+            <button className="btn btn-g" onClick={() => { setShowCust(false); setCust(""); setCustErr(""); }} style={{ fontSize: 11 }}>CANCEL</button>
           </div>
         </div>
       )}
 
       {/* Main layout */}
-      <div style={{display:"grid",gridTemplateColumns:"300px 1fr",gap:12}}>
+      <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: 12 }}>
         {/* Call list */}
-        <div style={{display:"flex",flexDirection:"column",gap:7,maxHeight:"calc(100vh - 260px)",overflowY:"auto"}}>
-          {calls.length===0 && (
-            <div style={{textAlign:"center",color:"var(--t3)",fontSize:12,padding:"30px 0",fontFamily:"var(--fm)"}}>No calls logged yet.<br/>Click + LOG CALL to add one.</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 7, maxHeight: "calc(100vh - 260px)", overflowY: "auto" }}>
+          {calls.length === 0 && (
+            <div style={{ textAlign: "center", color: "var(--t3)", fontSize: 12, padding: "30px 0", fontFamily: "var(--fm)" }}>No calls logged yet.<br />Click + LOG CALL to add one.</div>
           )}
-          {calls.map(c=>(
-            <div key={c.id} className="card" style={{padding:12,cursor:"pointer",borderLeft:`3px solid ${selId===c.id?cfg.agents.ORACLE.color:"transparent"}`,transition:"border-color .15s",position:"relative"}}
-              onClick={()=>selectCall(c)}>
-              <div style={{display:"flex",justifyContent:"space-between",marginBottom:5,paddingRight:20}}>
-                <div style={{fontSize:12,fontWeight:600,flex:1,lineHeight:1.3}}>{c.name}</div>
-                <span className={`tag ${OC[c.outcome]?.cls||""}`} style={{flexShrink:0,marginLeft:6}}>{OC[c.outcome]?.l||c.outcome}</span>
+          {calls.map(c => (
+            <div key={c.id} className="card" style={{ padding: 12, cursor: "pointer", borderLeft: `3px solid ${selId === c.id ? cfg.agents.ORACLE.color : "transparent"}`, transition: "border-color .15s", position: "relative" }}
+              onClick={() => selectCall(c)}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5, paddingRight: 20 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, flex: 1, lineHeight: 1.3 }}>{c.name}</div>
+                <span className={`tag ${OC[c.outcome]?.cls || ""}`} style={{ flexShrink: 0, marginLeft: 6 }}>{OC[c.outcome]?.l || c.outcome}</span>
               </div>
-              <div style={{fontSize:11,color:"var(--t2)",marginBottom:4,lineHeight:1.4}}>{c.ctx.substring(0,70)}{c.ctx.length>70?"...":""}</div>
-              <div style={{fontSize:9,color:"var(--t3)",fontFamily:"var(--fm)"}}>{c.date}</div>
-              <button onClick={e=>{e.stopPropagation();delCall(c.id);}}
-                style={{position:"absolute",top:7,right:7,background:"none",border:"none",color:"var(--t3)",cursor:"pointer",fontSize:14,lineHeight:1,padding:"2px 4px"}}>✕</button>
+              <div style={{ fontSize: 11, color: "var(--t2)", marginBottom: 4, lineHeight: 1.4 }}>{c.ctx.substring(0, 70)}{c.ctx.length > 70 ? "..." : ""}</div>
+              <div style={{ fontSize: 9, color: "var(--t3)", fontFamily: "var(--fm)" }}>{c.date}</div>
+              <button onClick={e => { e.stopPropagation(); delCall(c.id); }}
+                style={{ position: "absolute", top: 7, right: 7, background: "none", border: "none", color: "var(--t3)", cursor: "pointer", fontSize: 14, lineHeight: 1, padding: "2px 4px" }}>✕</button>
             </div>
           ))}
         </div>
 
         {/* Analysis panel */}
-        <div className="card" style={{padding:18,minHeight:320}}>
+        <div className="card" style={{ padding: 18, minHeight: 320 }}>
           {!selId ? (
-            <div style={{textAlign:"center",padding:"50px 20px"}}>
-              <div style={{fontSize:36,marginBottom:12,filter:`drop-shadow(0 0 14px ${cfg.agents.ORACLE.color})`}}>{cfg.agents.ORACLE.icon}</div>
-              <div style={{fontFamily:"var(--fd)",fontSize:15,fontWeight:700,marginBottom:6}}>{cfg.agents.ORACLE.name}</div>
-              <div style={{fontSize:12,color:"var(--t3)"}}>Select a call to get the full intelligence briefing.</div>
+            <div style={{ textAlign: "center", padding: "50px 20px" }}>
+              <div style={{ fontSize: 36, marginBottom: 12, filter: `drop-shadow(0 0 14px ${cfg.agents.ORACLE.color})` }}>{cfg.agents.ORACLE.icon}</div>
+              <div style={{ fontFamily: "var(--fd)", fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{cfg.agents.ORACLE.name}</div>
+              <div style={{ fontSize: 12, color: "var(--t3)" }}>Select a call to get the full intelligence briefing.</div>
             </div>
           ) : analyzing ? (
-            <div style={{textAlign:"center",padding:"50px 20px"}}>
-              <div style={{display:"flex",justifyContent:"center",gap:7,marginBottom:14}}>
-                {[0,1,2].map(i=><div key={i} style={{width:8,height:8,borderRadius:"50%",background:cfg.agents.ORACLE.color,animation:`pulse 1s ease ${i*.2}s infinite`}}/>)}
+            <div style={{ textAlign: "center", padding: "50px 20px" }}>
+              <div style={{ display: "flex", justifyContent: "center", gap: 7, marginBottom: 14 }}>
+                {[0, 1, 2].map(i => <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: cfg.agents.ORACLE.color, animation: `pulse 1s ease ${i * .2}s infinite` }} />)}
               </div>
-              <div style={{fontSize:13,color:cfg.agents.ORACLE.color,fontFamily:"var(--fm)",letterSpacing:".05em"}}>{cfg.agents.ORACLE.name} analyzing...</div>
+              <div style={{ fontSize: 13, color: cfg.agents.ORACLE.color, fontFamily: "var(--fm)", letterSpacing: ".05em" }}>{cfg.agents.ORACLE.name} analyzing...</div>
             </div>
           ) : analyses[selId] ? (
             <>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,paddingBottom:12,borderBottom:"1px solid var(--b1)"}}>
-                <div style={{display:"flex",alignItems:"center",gap:10}}>
-                  <Avatar id="ORACLE" size={28} cfg={cfg}/>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, paddingBottom: 12, borderBottom: "1px solid var(--b1)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <Avatar id="ORACLE" size={28} cfg={cfg} />
                   <div>
-                    <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700}}>{selCall?.name||"Transcript"}</div>
-                    <div style={{fontSize:11,color:"var(--t2)"}}>{selCall?.date}</div>
+                    <div style={{ fontFamily: "var(--fd)", fontSize: 14, fontWeight: 700 }}>{selCall?.name || "Transcript"}</div>
+                    <div style={{ fontSize: 11, color: "var(--t2)" }}>{selCall?.date}</div>
                   </div>
                 </div>
-                <div style={{display:"flex",gap:7}}>
-                  <button className="btn btn-g" onClick={()=>{ setAn(p=>({...p,[selId]:undefined})); if(selCall) runAnalysis(selCall); }} style={{fontSize:10,padding:"4px 9px"}}>↻ RE-ANALYZE</button>
-                  <button className="btn btn-g" onClick={()=>navigator.clipboard?.writeText(analyses[selId]||"")} style={{fontSize:10,padding:"4px 9px"}}>COPY</button>
+                <div style={{ display: "flex", gap: 7 }}>
+                  <button className="btn btn-g" onClick={() => { setAn(p => ({ ...p, [selId]: undefined })); if (selCall) runAnalysis(selCall); }} style={{ fontSize: 10, padding: "4px 9px" }}>↻ RE-ANALYZE</button>
+                  <button className="btn btn-g" onClick={() => navigator.clipboard?.writeText(analyses[selId] || "")} style={{ fontSize: 10, padding: "4px 9px" }}>COPY</button>
                 </div>
               </div>
-              <pre style={{fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"var(--t1)",fontFamily:"var(--fb)",maxHeight:"60vh",overflowY:"auto"}}>{analyses[selId]}</pre>
+              <pre style={{ fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", color: "var(--t1)", fontFamily: "var(--fb)", maxHeight: "60vh", overflowY: "auto" }}>{analyses[selId]}</pre>
             </>
           ) : (
-            <div style={{textAlign:"center",padding:"50px 20px",color:"var(--t3)"}}>
-              <div style={{fontSize:12,fontFamily:"var(--fm)"}}>Something went wrong. Try selecting the call again.</div>
+            <div style={{ textAlign: "center", padding: "50px 20px", color: "var(--t3)" }}>
+              <div style={{ fontSize: 12, fontFamily: "var(--fm)" }}>Something went wrong. Try selecting the call again.</div>
             </div>
           )}
         </div>
@@ -1553,26 +1555,26 @@ function Calls({notify, cfg}) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 const SKILL_PLACEHOLDERS = {
-  sk1:  "e.g. Build a dashboard page for tracking weekly agent KPIs. Stack: React + Supabase. Deploy to Vercel.",
-  sk2:  "e.g. Automate lead capture from Typeform → tag in CRM → send welcome DM via ManyChat. Use n8n.",
-  sk3:  "e.g. New client joining Monday. Name: Alex. Program: 4-month coaching. Discord handle: @alexbuilds.",
-  sk4:  "e.g. Lead said \x27I need to think about it\x27 after the call. Last touchpoint: 2 days ago. Offer: $2,500/mo.",
-  sk5:  "e.g. Prospect said \x27It\x27s too expensive\x27 and \x27I\x27m not sure I have time.\x27 Close them on a $3k offer.",
-  sk6:  "e.g. Write a VSL for our AI automation agency. Offer: $5k setup + $1,500/mo retainer. Target: 6-fig business owners.",
-  sk7:  "e.g. Analyze top 5 competitors in the AI coaching space. Focus on pricing, content hooks, and offer positioning.",
-  sk8:  "e.g. Topic: How I built a $30k/mo business with 3 AI agents. Angle: behind the scenes / real numbers.",
-  sk9:  "e.g. Title idea: \x27The AI CEO Blueprint\x27. Audience: entrepreneurs wanting to automate their business operations.",
+  sk1: "e.g. Build a dashboard page for tracking weekly agent KPIs. Stack: React + Supabase. Deploy to Vercel.",
+  sk2: "e.g. Automate lead capture from Typeform → tag in CRM → send welcome DM via ManyChat. Use n8n.",
+  sk3: "e.g. New client joining Monday. Name: Alex. Program: 4-month coaching. Discord handle: @alexbuilds.",
+  sk4: "e.g. Lead said \x27I need to think about it\x27 after the call. Last touchpoint: 2 days ago. Offer: $2,500/mo.",
+  sk5: "e.g. Prospect said \x27It\x27s too expensive\x27 and \x27I\x27m not sure I have time.\x27 Close them on a $3k offer.",
+  sk6: "e.g. Write a VSL for our AI automation agency. Offer: $5k setup + $1,500/mo retainer. Target: 6-fig business owners.",
+  sk7: "e.g. Analyze top 5 competitors in the AI coaching space. Focus on pricing, content hooks, and offer positioning.",
+  sk8: "e.g. Topic: How I built a $30k/mo business with 3 AI agents. Angle: behind the scenes / real numbers.",
+  sk9: "e.g. Title idea: \x27The AI CEO Blueprint\x27. Audience: entrepreneurs wanting to automate their business operations.",
   sk10: "e.g. We\x27re spending ~$800/mo on API calls. Find where we can cut costs without hurting output quality.",
   sk11: "e.g. Q2 goal: hit $50k MRR. Current: $18k. Main levers: content, outbound, and client retention.",
 };
 
 // SKILLS
 // ─────────────────────────────────────────────────────────────────────────────
-function Skills({skills, setSkills, notify, cfg}) {
+function Skills({ skills, setSkills, notify, cfg }) {
   const [runModal, setRunModal] = useState(null); // skill being configured
-  const [prompt, setPrompt]     = useState("");
-  const [loading, setLoad]      = useState(null);
-  const [result, setResult]     = useState(null); // {sk, output}
+  const [prompt, setPrompt] = useState("");
+  const [loading, setLoad] = useState(null);
+  const [result, setResult] = useState(null); // {sk, output}
 
   const openRun = (sk) => { setRunModal(sk); setPrompt(""); setResult(null); };
   const closeModal = () => { setRunModal(null); setPrompt(""); };
@@ -1585,85 +1587,85 @@ function Skills({skills, setSkills, notify, cfg}) {
       ? `Execute the "${sk.title}" skill.\n\nContext / instructions from user:\n${prompt}\n\nSkill description: ${sk.desc}\n\nProvide complete, thorough, actionable output.`
       : `Execute the "${sk.title}" skill.\n${sk.desc}\n\nProvide complete step-by-step execution output. Be thorough and actionable.`;
     try {
-      const r = await claude(getSysPrompt(sk.agent, cfg), [{role:"user", content:userMsg}]);
-      setSkills(p => { const u = p.map(s => s.id===sk.id ? {...s, runs:s.runs+1} : s); sSet("apex_skills_v3",u); return u; });
-      setResult({sk, output:r});
+      const r = await claude(getSysPrompt(sk.agent, cfg), [{ role: "user", content: userMsg }]);
+      setSkills(p => { const u = p.map(s => s.id === sk.id ? { ...s, runs: s.runs + 1 } : s); sSet("apex_skills_v3", u); return u; });
+      setResult({ sk, output: r });
       setRunModal(null);
       notify(`Skill "${sk.title}" executed by ${cfg.agents[sk.agent].name}!`);
-    } catch(e) {
-      setResult({sk, output:"⚠ Error: " + e.message});
+    } catch (e) {
+      setResult({ sk, output: "⚠ Error: " + e.message });
       setRunModal(null);
     }
     setLoad(null);
   };
 
-  const grouped = Object.keys(cfg.agents).reduce((acc,id) => { acc[id]=skills.filter(s=>s.agent===id); return acc; }, {});
+  const grouped = Object.keys(cfg.agents).reduce((acc, id) => { acc[id] = skills.filter(s => s.agent === id); return acc; }, {});
 
   return (
     <div className="fu">
       {/* Header */}
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
         <div>
-          <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Skills</h1>
-          <p style={{color:"var(--t2)",fontSize:13}}>Agent capabilities — run and track execution.</p>
+          <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Skills</h1>
+          <p style={{ color: "var(--t2)", fontSize: 13 }}>Agent capabilities — run and track execution.</p>
         </div>
-        <div style={{display:"flex",gap:10}}>
-          <div className="card" style={{padding:"9px 16px",textAlign:"center"}}>
-            <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800}}>{skills.length}</div>
-            <div style={{fontSize:8,fontFamily:"var(--fm)",color:"var(--t3)"}}>SKILLS</div>
+        <div style={{ display: "flex", gap: 10 }}>
+          <div className="card" style={{ padding: "9px 16px", textAlign: "center" }}>
+            <div style={{ fontFamily: "var(--fd)", fontSize: 18, fontWeight: 800 }}>{skills.length}</div>
+            <div style={{ fontSize: 8, fontFamily: "var(--fm)", color: "var(--t3)" }}>SKILLS</div>
           </div>
-          <div className="card" style={{padding:"9px 16px",textAlign:"center"}}>
-            <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800,color:"var(--a)"}}>{skills.reduce((a,s)=>a+s.runs,0)}</div>
-            <div style={{fontSize:8,fontFamily:"var(--fm)",color:"var(--t3)"}}>RUNS</div>
+          <div className="card" style={{ padding: "9px 16px", textAlign: "center" }}>
+            <div style={{ fontFamily: "var(--fd)", fontSize: 18, fontWeight: 800, color: "var(--a)" }}>{skills.reduce((a, s) => a + s.runs, 0)}</div>
+            <div style={{ fontSize: 8, fontFamily: "var(--fm)", color: "var(--t3)" }}>RUNS</div>
           </div>
         </div>
       </div>
 
       {/* Result panel */}
       {result && (
-        <div className="card fu" style={{padding:18,marginBottom:18,borderLeft:`3px solid ${cfg.agents[result.sk.agent]?.color||"var(--a)"}`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:9}}>
-              <Avatar id={result.sk.agent} size={26} cfg={cfg}/>
+        <div className="card fu" style={{ padding: 18, marginBottom: 18, borderLeft: `3px solid ${cfg.agents[result.sk.agent]?.color || "var(--a)"}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+              <Avatar id={result.sk.agent} size={26} cfg={cfg} />
               <div>
-                <div style={{fontFamily:"var(--fd)",fontWeight:700,fontSize:13,color:cfg.agents[result.sk.agent]?.color}}>{result.sk.title} — OUTPUT</div>
-                <div style={{fontSize:10,color:"var(--t3)",fontFamily:"var(--fm)"}}>via {cfg.agents[result.sk.agent]?.name}</div>
+                <div style={{ fontFamily: "var(--fd)", fontWeight: 700, fontSize: 13, color: cfg.agents[result.sk.agent]?.color }}>{result.sk.title} — OUTPUT</div>
+                <div style={{ fontSize: 10, color: "var(--t3)", fontFamily: "var(--fm)" }}>via {cfg.agents[result.sk.agent]?.name}</div>
               </div>
             </div>
-            <div style={{display:"flex",gap:7}}>
-              <button className="btn btn-g" onClick={()=>navigator.clipboard?.writeText(result.output)} style={{fontSize:10,padding:"4px 10px"}}>COPY</button>
-              <button className="btn btn-g" onClick={()=>setResult(null)} style={{fontSize:10,padding:"4px 10px"}}>✕ CLOSE</button>
+            <div style={{ display: "flex", gap: 7 }}>
+              <button className="btn btn-g" onClick={() => navigator.clipboard?.writeText(result.output)} style={{ fontSize: 10, padding: "4px 10px" }}>COPY</button>
+              <button className="btn btn-g" onClick={() => setResult(null)} style={{ fontSize: 10, padding: "4px 10px" }}>✕ CLOSE</button>
             </div>
           </div>
-          <pre style={{fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"var(--t1)",fontFamily:"var(--fb)",maxHeight:480,overflowY:"auto"}}>{result.output}</pre>
+          <pre style={{ fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", color: "var(--t1)", fontFamily: "var(--fb)", maxHeight: 480, overflowY: "auto" }}>{result.output}</pre>
         </div>
       )}
 
       {/* Skill cards */}
-      {Object.entries(cfg.agents).map(([id,a]) => {
+      {Object.entries(cfg.agents).map(([id, a]) => {
         const agSkills = grouped[id];
         if (!agSkills?.length) return null;
         return (
-          <div key={id} style={{marginBottom:20}}>
-            <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:9}}>
-              <Avatar id={id} size={22} level cfg={cfg}/>
-              <span style={{fontFamily:"var(--fd)",fontWeight:700,fontSize:13}}>{a.name}</span>
-              <span className="tag" style={{marginLeft:2}}>{agSkills.length}</span>
+          <div key={id} style={{ marginBottom: 20 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 9 }}>
+              <Avatar id={id} size={22} level cfg={cfg} />
+              <span style={{ fontFamily: "var(--fd)", fontWeight: 700, fontSize: 13 }}>{a.name}</span>
+              <span className="tag" style={{ marginLeft: 2 }}>{agSkills.length}</span>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(250px,1fr))",gap:9}}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))", gap: 9 }}>
               {agSkills.map(sk => (
-                <div key={sk.id} className="card" style={{padding:13,borderTop:result?.sk?.id===sk.id?`2px solid ${a.color}`:"2px solid transparent",transition:"border-color .2s"}}>
-                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-                    <div style={{fontSize:13,fontWeight:700,fontFamily:"var(--fd)",lineHeight:1.2}}>{sk.title}</div>
-                    <span style={{fontFamily:"var(--fm)",fontSize:10,color:"var(--a)",flexShrink:0,marginLeft:6}}>{sk.runs}×</span>
+                <div key={sk.id} className="card" style={{ padding: 13, borderTop: result?.sk?.id === sk.id ? `2px solid ${a.color}` : "2px solid transparent", transition: "border-color .2s" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, fontFamily: "var(--fd)", lineHeight: 1.2 }}>{sk.title}</div>
+                    <span style={{ fontFamily: "var(--fm)", fontSize: 10, color: "var(--a)", flexShrink: 0, marginLeft: 6 }}>{sk.runs}×</span>
                   </div>
-                  <p style={{fontSize:11,color:"var(--t2)",marginBottom:9,lineHeight:1.5}}>{sk.desc}</p>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:3,marginBottom:9}}>
-                    {sk.tags.map(t=><span key={t} className="tag">{t}</span>)}
+                  <p style={{ fontSize: 11, color: "var(--t2)", marginBottom: 9, lineHeight: 1.5 }}>{sk.desc}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: 9 }}>
+                    {sk.tags.map(t => <span key={t} className="tag">{t}</span>)}
                   </div>
-                  <button className="btn btn-a" onClick={()=>openRun(sk)} disabled={loading===sk.id}
-                    style={{width:"100%",justifyContent:"center",fontSize:10}}>
-                    {loading===sk.id ? <><Spin color="#060500"/>RUNNING…</> : "▷ RUN SKILL"}
+                  <button className="btn btn-a" onClick={() => openRun(sk)} disabled={loading === sk.id}
+                    style={{ width: "100%", justifyContent: "center", fontSize: 10 }}>
+                    {loading === sk.id ? <><Spin color="#060500" />RUNNING…</> : "▷ RUN SKILL"}
                   </button>
                 </div>
               ))}
@@ -1674,31 +1676,31 @@ function Skills({skills, setSkills, notify, cfg}) {
 
       {/* Run modal */}
       {runModal && (
-        <div style={{position:"fixed",inset:0,zIndex:500,background:"rgba(5,7,13,.85)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}
-          onClick={e=>e.target===e.currentTarget&&closeModal()}>
-          <div className="card fu" style={{width:"100%",maxWidth:520,padding:24,borderTop:`3px solid ${cfg.agents[runModal.agent]?.color}`}}>
-            <div style={{display:"flex",alignItems:"center",gap:11,marginBottom:16}}>
-              <Avatar id={runModal.agent} size={36} cfg={cfg}/>
+        <div style={{ position: "fixed", inset: 0, zIndex: 500, background: "rgba(5,7,13,.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+          onClick={e => e.target === e.currentTarget && closeModal()}>
+          <div className="card fu" style={{ width: "100%", maxWidth: 520, padding: 24, borderTop: `3px solid ${cfg.agents[runModal.agent]?.color}` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 16 }}>
+              <Avatar id={runModal.agent} size={36} cfg={cfg} />
               <div>
-                <div style={{fontFamily:"var(--fd)",fontWeight:800,fontSize:15}}>{runModal.title}</div>
-                <div style={{fontSize:11,color:"var(--t2)"}}>{cfg.agents[runModal.agent]?.name} · {runModal.desc}</div>
+                <div style={{ fontFamily: "var(--fd)", fontWeight: 800, fontSize: 15 }}>{runModal.title}</div>
+                <div style={{ fontSize: 11, color: "var(--t2)" }}>{cfg.agents[runModal.agent]?.name} · {runModal.desc}</div>
               </div>
             </div>
-            <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:6}}>
-              ADD CONTEXT <span style={{color:"var(--t3)",fontWeight:400,textTransform:"none",letterSpacing:0}}>(optional — tell the agent what specifically you need)</span>
+            <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 6 }}>
+              ADD CONTEXT <span style={{ color: "var(--t3)", fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional — tell the agent what specifically you need)</span>
             </label>
-            <textarea className="input" autoFocus value={prompt} onChange={e=>setPrompt(e.target.value)}
-              onKeyDown={e=>e.key==="Enter"&&e.metaKey&&run()}
+            <textarea className="input" autoFocus value={prompt} onChange={e => setPrompt(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && e.metaKey && run()}
               placeholder={SKILL_PLACEHOLDERS[runModal.id] || `e.g. Provide specific context for the ${runModal.title} skill…`}
-              style={{marginBottom:14,height:100}}/>
-            <div style={{display:"flex",gap:8}}>
-              <button className="btn btn-a" onClick={run} disabled={loading===runModal.id}
-                style={{flex:1,justifyContent:"center",padding:"10px"}}>
-                {loading===runModal.id?<><Spin color="#060500"/>RUNNING…</>:"▷ EXECUTE SKILL"}
+              style={{ marginBottom: 14, height: 100 }} />
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn btn-a" onClick={run} disabled={loading === runModal.id}
+                style={{ flex: 1, justifyContent: "center", padding: "10px" }}>
+                {loading === runModal.id ? <><Spin color="#060500" />RUNNING…</> : "▷ EXECUTE SKILL"}
               </button>
-              <button className="btn btn-g" onClick={closeModal} style={{padding:"10px 16px"}}>CANCEL</button>
+              <button className="btn btn-g" onClick={closeModal} style={{ padding: "10px 16px" }}>CANCEL</button>
             </div>
-            <div style={{fontSize:10,color:"var(--t3)",fontFamily:"var(--fm)",textAlign:"center",marginTop:8}}>⌘ + Enter to run</div>
+            <div style={{ fontSize: 10, color: "var(--t3)", fontFamily: "var(--fm)", textAlign: "center", marginTop: 8 }}>⌘ + Enter to run</div>
           </div>
         </div>
       )}
@@ -1720,30 +1722,33 @@ const SOP_PLACEHOLDERS = {
   s8: "e.g. Client Marcus hit $12k/mo in month 2. We automated his outreach + content. He's on camera.",
 };
 
-function SOPs({sops, notify, cfg}) {
-  const [modal, setModal]   = useState(null); // sop being configured
-  const [prompt, setPrompt] = useState("");
-  const [loading, setLoad]  = useState(null);
+function SOPs({ sops, notify, cfg }) {
+  const [modal, setModal] = useState(null); // sop being configured
+  const promptRef = useRef(null);
+  const [loading, setLoad] = useState(null);
   const [result, setResult] = useState(null); // {sop, output}
 
-  const catCls = {content:"tamb", sales:"tred", research:"tpur", clients:"tg", dev:"tc", operations:"tgreen"};
+  const catCls = { content: "tamb", sales: "tred", research: "tpur", clients: "tg", dev: "tc", operations: "tgreen" };
 
-  const openModal = (sop) => { setModal(sop); setPrompt(""); };
-  const closeModal = () => { setModal(null); setPrompt(""); };
+  const openModal = (sop) => { setModal(sop); };
+  const closeModal = () => { setModal(null); };
 
   const generate = async () => {
     if (!modal || loading) return;
     const sop = modal;
     setLoad(sop.id);
-    const contextLine = prompt.trim() ? `\n\nAdditional context from user:\n${prompt}` : "";
-    const userMsg = `Write the complete SOP for: "${sop.title}".\nSections: ${sop.sections.join(", ")}.${contextLine}\n\nFor each section: numbered steps, specific actions, decision points, time estimates. Make it so clear a new team member can execute it on day one.`;
+
+    const currentPrompt = promptRef.current?.value || "";
+    const contextLine = currentPrompt.trim() ? `\n\n<user_context>\n${currentPrompt}\n</user_context>` : "";
+    const userMsg = `Write the complete SOP for: "${sop.title}".\nSections: ${sop.sections.join(", ")}.\n\nFor each section: provide numbered steps, specific actions, decision points, and time estimates. Make it so clear a new team member can execute it on day one.${contextLine}\n\nCRITICAL INSTRUCTION: If <user_context> is provided above, you MUST specifically adapt the entire SOP to fit those exact details.`;
+
     try {
-      const r = await claude(getSysPrompt(sop.agent, cfg), [{role:"user", content:userMsg}]);
-      setResult({sop, output:r});
+      const r = await claude(getSysPrompt(sop.agent, cfg), [{ role: "user", content: userMsg }]);
+      setResult({ sop, output: r });
       setModal(null);
       notify(`SOP "${sop.title}" generated by ${cfg.agents[sop.agent]?.name}!`);
-    } catch(e) {
-      setResult({sop, output:"⚠ Error: " + e.message});
+    } catch (e) {
+      setResult({ sop, output: "⚠ Error: " + e.message });
       setModal(null);
     }
     setLoad(null);
@@ -1752,59 +1757,59 @@ function SOPs({sops, notify, cfg}) {
   return (
     <div className="fu">
       {/* Header */}
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
         <div>
-          <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>SOPs</h1>
-          <p style={{color:"var(--t2)",fontSize:13}}>Click any SOP to generate the full document — add context to make it specific to your situation.</p>
+          <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>SOPs</h1>
+          <p style={{ color: "var(--t2)", fontSize: 13 }}>Click any SOP to generate the full document — add context to make it specific to your situation.</p>
         </div>
         <span className="tag tgreen">{sops.length} ACTIVE</span>
       </div>
 
       {/* Result panel */}
       {result && (
-        <div className="card fu" style={{padding:18,marginBottom:18,borderLeft:`3px solid ${cfg.agents[result.sop.agent]?.color||"var(--a)"}`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:9}}>
-              <Avatar id={result.sop.agent} size={26} cfg={cfg}/>
+        <div className="card fu" style={{ padding: 18, marginBottom: 18, borderLeft: `3px solid ${cfg.agents[result.sop.agent]?.color || "var(--a)"}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+              <Avatar id={result.sop.agent} size={26} cfg={cfg} />
               <div>
-                <div style={{fontFamily:"var(--fd)",fontWeight:700,fontSize:13,color:cfg.agents[result.sop.agent]?.color}}>{result.sop.title}</div>
-                <div style={{fontSize:10,color:"var(--t3)",fontFamily:"var(--fm)"}}>via {cfg.agents[result.sop.agent]?.name} · {result.sop.sections.length} sections</div>
+                <div style={{ fontFamily: "var(--fd)", fontWeight: 700, fontSize: 13, color: cfg.agents[result.sop.agent]?.color }}>{result.sop.title}</div>
+                <div style={{ fontSize: 10, color: "var(--t3)", fontFamily: "var(--fm)" }}>via {cfg.agents[result.sop.agent]?.name} · {result.sop.sections.length} sections</div>
               </div>
             </div>
-            <div style={{display:"flex",gap:7}}>
-              <button className="btn btn-g" onClick={()=>navigator.clipboard?.writeText(result.output)} style={{fontSize:10,padding:"4px 10px"}}>COPY</button>
-              <button className="btn btn-g" onClick={()=>setResult(null)} style={{fontSize:10,padding:"4px 10px"}}>✕ CLOSE</button>
+            <div style={{ display: "flex", gap: 7 }}>
+              <button className="btn btn-g" onClick={() => navigator.clipboard?.writeText(result.output)} style={{ fontSize: 10, padding: "4px 10px" }}>COPY</button>
+              <button className="btn btn-g" onClick={() => setResult(null)} style={{ fontSize: 10, padding: "4px 10px" }}>✕ CLOSE</button>
             </div>
           </div>
-          <pre style={{fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"var(--t1)",fontFamily:"var(--fb)",maxHeight:520,overflowY:"auto"}}>{result.output}</pre>
+          <pre style={{ fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", color: "var(--t1)", fontFamily: "var(--fb)", maxHeight: 520, overflowY: "auto" }}>{result.output}</pre>
         </div>
       )}
 
       {/* SOP cards */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:10}}>
-        {sops.map((sop,idx) => {
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 10 }}>
+        {sops.map((sop, idx) => {
           const a = cfg.agents[sop.agent];
           const isActive = result?.sop?.id === sop.id;
           return (
-            <div key={sop.id} className="card fu" style={{padding:14,animationDelay:`${idx*.05}s`,borderTop:`2px solid ${isActive?a?.color:"transparent"}`,transition:"border-color .2s"}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
-                <div style={{fontSize:13,fontWeight:700,fontFamily:"var(--fd)",lineHeight:1.2,flex:1}}>{sop.title}</div>
-                <div style={{display:"flex",gap:4,marginLeft:7,flexShrink:0}}>
-                  <span className={`tag ${catCls[sop.cat]||""}`}>{sop.cat}</span>
+            <div key={sop.id} className="card fu" style={{ padding: 14, animationDelay: `${idx * .05}s`, borderTop: `2px solid ${isActive ? a?.color : "transparent"}`, transition: "border-color .2s" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, fontFamily: "var(--fd)", lineHeight: 1.2, flex: 1 }}>{sop.title}</div>
+                <div style={{ display: "flex", gap: 4, marginLeft: 7, flexShrink: 0 }}>
+                  <span className={`tag ${catCls[sop.cat] || ""}`}>{sop.cat}</span>
                 </div>
               </div>
-              <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
-                <Avatar id={sop.agent} size={16} cfg={cfg}/>
-                <span style={{fontSize:10,fontFamily:"var(--fm)",color:a?.color}}>{a?.name}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                <Avatar id={sop.agent} size={16} cfg={cfg} />
+                <span style={{ fontSize: 10, fontFamily: "var(--fm)", color: a?.color }}>{a?.name}</span>
               </div>
-              <div style={{fontSize:10,color:"var(--t3)",lineHeight:1.7,marginBottom:12}}>
-                {sop.sections.map((s,i)=>(
-                  <span key={i}><span style={{color:"var(--a)",marginRight:4}}>{i+1}.</span>{s}{i<sop.sections.length-1 && <span style={{color:"var(--b2)"}}> · </span>}</span>
+              <div style={{ fontSize: 10, color: "var(--t3)", lineHeight: 1.7, marginBottom: 12 }}>
+                {sop.sections.map((s, i) => (
+                  <span key={i}><span style={{ color: "var(--a)", marginRight: 4 }}>{i + 1}.</span>{s}{i < sop.sections.length - 1 && <span style={{ color: "var(--b2)" }}> · </span>}</span>
                 ))}
               </div>
-              <button className="btn btn-a" onClick={()=>openModal(sop)} disabled={loading===sop.id}
-                style={{width:"100%",justifyContent:"center",fontSize:10}}>
-                {loading===sop.id ? <><Spin color="#060500"/>GENERATING…</> : "▷ GENERATE SOP"}
+              <button className="btn btn-a" onClick={() => openModal(sop)} disabled={loading === sop.id}
+                style={{ width: "100%", justifyContent: "center", fontSize: 10 }}>
+                {loading === sop.id ? <><Spin color="#060500" />GENERATING…</> : "▷ GENERATE SOP"}
               </button>
             </div>
           );
@@ -1813,37 +1818,37 @@ function SOPs({sops, notify, cfg}) {
 
       {/* Modal */}
       {modal && (
-        <div style={{position:"fixed",inset:0,zIndex:500,background:"rgba(5,7,13,.85)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}
-          onClick={e=>e.target===e.currentTarget&&closeModal()}>
-          <div className="card fu" style={{width:"100%",maxWidth:520,padding:24,borderTop:`3px solid ${cfg.agents[modal.agent]?.color}`}}>
-            <div style={{display:"flex",alignItems:"center",gap:11,marginBottom:12}}>
-              <Avatar id={modal.agent} size={36} cfg={cfg}/>
+        <div style={{ position: "fixed", inset: 0, zIndex: 500, background: "rgba(5,7,13,.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+          onClick={e => e.target === e.currentTarget && closeModal()}>
+          <div className="card fu" style={{ width: "100%", maxWidth: 520, padding: 24, borderTop: `3px solid ${cfg.agents[modal.agent]?.color}` }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 12 }}>
+              <Avatar id={modal.agent} size={36} cfg={cfg} />
               <div>
-                <div style={{fontFamily:"var(--fd)",fontWeight:800,fontSize:15}}>{modal.title}</div>
-                <div style={{fontSize:11,color:"var(--t2)"}}>{cfg.agents[modal.agent]?.name} · {modal.sections.length} sections</div>
+                <div style={{ fontFamily: "var(--fd)", fontWeight: 800, fontSize: 15 }}>{modal.title}</div>
+                <div style={{ fontSize: 11, color: "var(--t2)" }}>{cfg.agents[modal.agent]?.name} · {modal.sections.length} sections</div>
               </div>
             </div>
             {/* Section preview */}
-            <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:14}}>
-              {modal.sections.map((s,i)=>(
-                <span key={i} className="tag" style={{fontSize:9}}><span style={{color:"var(--a)",marginRight:3}}>{i+1}.</span>{s}</span>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 14 }}>
+              {modal.sections.map((s, i) => (
+                <span key={i} className="tag" style={{ fontSize: 9 }}><span style={{ color: "var(--a)", marginRight: 3 }}>{i + 1}.</span>{s}</span>
               ))}
             </div>
-            <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:6}}>
-              ADD CONTEXT <span style={{color:"var(--t3)",fontWeight:400,textTransform:"none",letterSpacing:0}}>(optional — make it specific to your situation)</span>
+            <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 6 }}>
+              ADD CONTEXT <span style={{ color: "var(--t3)", fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional — make it specific to your situation)</span>
             </label>
-            <textarea className="input" autoFocus value={prompt} onChange={e=>setPrompt(e.target.value)}
-              onKeyDown={e=>e.key==="Enter"&&e.metaKey&&generate()}
+            <textarea className="input" autoFocus ref={promptRef}
+              onKeyDown={e => e.key === "Enter" && e.metaKey && generate()}
               placeholder={SOP_PLACEHOLDERS[modal.id] || `e.g. Add specific context for the ${modal.title} SOP…`}
-              style={{marginBottom:14,height:96}}/>
-            <div style={{display:"flex",gap:8}}>
-              <button className="btn btn-a" onClick={generate} disabled={loading===modal.id}
-                style={{flex:1,justifyContent:"center",padding:"10px"}}>
-                {loading===modal.id?<><Spin color="#060500"/>GENERATING…</>:"▷ GENERATE FULL SOP"}
+              style={{ marginBottom: 14, height: 96 }} />
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn btn-a" onClick={generate} disabled={loading === modal.id}
+                style={{ flex: 1, justifyContent: "center", padding: "10px" }}>
+                {loading === modal.id ? <><Spin color="#060500" />GENERATING…</> : "▷ GENERATE FULL SOP"}
               </button>
-              <button className="btn btn-g" onClick={closeModal} style={{padding:"10px 16px"}}>CANCEL</button>
+              <button className="btn btn-g" onClick={closeModal} style={{ padding: "10px 16px" }}>CANCEL</button>
             </div>
-            <div style={{fontSize:10,color:"var(--t3)",fontFamily:"var(--fm)",textAlign:"center",marginTop:8}}>⌘ + Enter to generate</div>
+            <div style={{ fontSize: 10, color: "var(--t3)", fontFamily: "var(--fm)", textAlign: "center", marginTop: 8 }}>⌘ + Enter to generate</div>
           </div>
         </div>
       )}
@@ -1854,51 +1859,51 @@ function SOPs({sops, notify, cfg}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // WEEKLY REPORT
 // ─────────────────────────────────────────────────────────────────────────────
-function Report({tasks, notify, cfg}) {
-  const [report, setReport]   = useState("");
-  const [loading, setLoad]    = useState(false);
-  const [err, setErr]         = useState("");
-  const [saved, setSaved]     = useState([]);
-  const [notes, setNotes]     = useState("");
+function Report({ tasks, notify, cfg }) {
+  const [report, setReport] = useState("");
+  const [loading, setLoad] = useState(false);
+  const [err, setErr] = useState("");
+  const [saved, setSaved] = useState([]);
+  const [notes, setNotes] = useState("");
   const [showNotes, setShowNotes] = useState(true);
 
-  useEffect(()=>{ sGet("apex_reports",[]).then(setSaved); },[]);
+  useEffect(() => { sGet("apex_reports", []).then(setSaved); }, []);
 
-  const gen = async() => {
+  const gen = async () => {
     setLoad(true); setErr(""); setReport("");
-    const ctx = `Tasks Completed: ${tasks.filter(t=>t.status==="completed").map(t=>t.title).join(", ")||"None"}\nIn Progress: ${tasks.filter(t=>t.status==="in_progress").map(t=>`${t.title} (${t.agent})`).join(", ")}\nBacklog: ${tasks.filter(t=>t.status==="backlog").map(t=>t.title).join(", ")}\nDate: ${new Date().toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}`;
+    const ctx = `Tasks Completed: ${tasks.filter(t => t.status === "completed").map(t => t.title).join(", ") || "None"}\nIn Progress: ${tasks.filter(t => t.status === "in_progress").map(t => `${t.title} (${t.agent})`).join(", ")}\nBacklog: ${tasks.filter(t => t.status === "backlog").map(t => t.title).join(", ")}\nDate: ${new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}`;
     const extraNotes = notes.trim() ? `\n\nADDITIONAL CONTEXT FROM FOUNDER:\n${notes}` : "";
     try {
-      const r = await claude(getSysPrompt("APEX",cfg),[{role:"user",content:`Generate a Forbes-quality weekly executive report for ${cfg.brandName}:\n${ctx}${extraNotes}\n\n## EXECUTIVE SUMMARY\n## AGENT PERFORMANCE REVIEW\n## KEY WINS\n## BLOCKERS & RISKS\n## REVENUE PIPELINE\n## CONTENT PERFORMANCE\n## NEXT WEEK PRIORITIES\n## 30-60-90 DAY OUTLOOK\n\nBe direct, specific, action-oriented.`}]);
+      const r = await claude(getSysPrompt("APEX", cfg), [{ role: "user", content: `Generate a Forbes-quality weekly executive report for ${cfg.brandName}:\n${ctx}${extraNotes}\n\n## EXECUTIVE SUMMARY\n## AGENT PERFORMANCE REVIEW\n## KEY WINS\n## BLOCKERS & RISKS\n## REVENUE PIPELINE\n## CONTENT PERFORMANCE\n## NEXT WEEK PRIORITIES\n## 30-60-90 DAY OUTLOOK\n\nBe direct, specific, action-oriented.` }]);
       setReport(r); setShowNotes(false);
-      const e = {date:new Date().toLocaleDateString(), report:r};
-      const ns = [e,...saved.slice(0,4)]; setSaved(ns); sSet("apex_reports",ns);
+      const e = { date: new Date().toLocaleDateString(), report: r };
+      const ns = [e, ...saved.slice(0, 4)]; setSaved(ns); sSet("apex_reports", ns);
       notify("Executive report generated and saved!");
-    } catch(e){ setErr(e.message); }
+    } catch (e) { setErr(e.message); }
     setLoad(false);
   };
 
   return (
     <div className="fu">
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
         <div>
-          <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Weekly Report</h1>
-          <p style={{color:"var(--t2)",fontSize:13}}>{cfg.agents.APEX.name} compiles your executive briefing.</p>
+          <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Weekly Report</h1>
+          <p style={{ color: "var(--t2)", fontSize: 13 }}>{cfg.agents.APEX.name} compiles your executive briefing.</p>
         </div>
-        <div style={{display:"flex",gap:8}}>
-          {report && <button className="btn btn-g" onClick={()=>setShowNotes(p=>!p)} style={{fontSize:11}}>{showNotes?"HIDE NOTES":"EDIT NOTES"}</button>}
+        <div style={{ display: "flex", gap: 8 }}>
+          {report && <button className="btn btn-g" onClick={() => setShowNotes(p => !p)} style={{ fontSize: 11 }}>{showNotes ? "HIDE NOTES" : "EDIT NOTES"}</button>}
           <button className="btn btn-a" onClick={gen} disabled={loading}>
-            {loading?<><Spin color="#060500"/>COMPILING</>:report?"REGENERATE ↻":"⚡ GENERATE REPORT"}
+            {loading ? <><Spin color="#060500" />COMPILING</> : report ? "REGENERATE ↻" : "⚡ GENERATE REPORT"}
           </button>
         </div>
       </div>
 
-      {saved.length>0&&(
-        <div style={{marginBottom:12}}>
+      {saved.length > 0 && (
+        <div style={{ marginBottom: 12 }}>
           <SH>SAVED REPORTS</SH>
-          <div style={{display:"flex",gap:7}}>
-            {saved.map((s,i)=>(
-              <button key={i} className="btn btn-g" onClick={()=>setReport(s.report)} style={{fontSize:10}}>{s.date}</button>
+          <div style={{ display: "flex", gap: 7 }}>
+            {saved.map((s, i) => (
+              <button key={i} className="btn btn-g" onClick={() => setReport(s.report)} style={{ fontSize: 10 }}>{s.date}</button>
             ))}
           </div>
         </div>
@@ -1906,48 +1911,48 @@ function Report({tasks, notify, cfg}) {
 
       {/* Context notes panel */}
       {showNotes && (
-        <div className="card fi" style={{padding:16,marginBottom:14,borderTop:"2px solid var(--a)"}}>
-          <div style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--a)",letterSpacing:".1em",marginBottom:8}}>THIS WEEK'S NOTES — OPTIONAL BUT MAKES THE REPORT FAR BETTER</div>
-          <textarea className="input" value={notes} onChange={e=>setNotes(e.target.value)}
+        <div className="card fi" style={{ padding: 16, marginBottom: 14, borderTop: "2px solid var(--a)" }}>
+          <div style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--a)", letterSpacing: ".1em", marginBottom: 8 }}>THIS WEEK'S NOTES — OPTIONAL BUT MAKES THE REPORT FAR BETTER</div>
+          <textarea className="input" value={notes} onChange={e => setNotes(e.target.value)}
             placeholder={`e.g. Big wins: Closed 2 new clients at $3K/mo each. Revenue hit $18K MRR.\n\nBlockers: Onboarding automation still breaking on step 3. Need FORGE to fix.\n\nThis week I published 4 reels — best performer was the "AI replaced my team" one at 2.1K views.\n\nNext week focus: launch the quiz funnel, close the 2 warm leads.`}
-            style={{height:130,marginBottom:0}}/>
-          <div style={{fontSize:10,color:"var(--t3)",fontFamily:"var(--fm)",marginTop:6}}>These notes will be included verbatim in the report context. Task board data is pulled automatically.</div>
+            style={{ height: 130, marginBottom: 0 }} />
+          <div style={{ fontSize: 10, color: "var(--t3)", fontFamily: "var(--fm)", marginTop: 6 }}>These notes will be included verbatim in the report context. Task board data is pulled automatically.</div>
         </div>
       )}
 
-      {!report&&!loading&&(
-        <div className="card" style={{padding:"50px 20px",textAlign:"center"}}>
-          <div style={{fontSize:44,marginBottom:10,filter:"drop-shadow(0 0 18px var(--a))"}}>◈</div>
-          <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800,marginBottom:7}}>Weekly Executive Briefing</div>
-          <div style={{color:"var(--t2)",fontSize:13,maxWidth:380,margin:"0 auto 22px",lineHeight:1.6}}>{cfg.agents.APEX.name} will compile all agent activity and business metrics into a comprehensive weekly report.</div>
+      {!report && !loading && (
+        <div className="card" style={{ padding: "50px 20px", textAlign: "center" }}>
+          <div style={{ fontSize: 44, marginBottom: 10, filter: "drop-shadow(0 0 18px var(--a))" }}>◈</div>
+          <div style={{ fontFamily: "var(--fd)", fontSize: 18, fontWeight: 800, marginBottom: 7 }}>Weekly Executive Briefing</div>
+          <div style={{ color: "var(--t2)", fontSize: 13, maxWidth: 380, margin: "0 auto 22px", lineHeight: 1.6 }}>{cfg.agents.APEX.name} will compile all agent activity and business metrics into a comprehensive weekly report.</div>
           <button className="btn btn-a" onClick={gen}>GENERATE THIS WEEK'S REPORT →</button>
         </div>
       )}
-      {loading&&(
-        <div className="card" style={{padding:"50px 20px",textAlign:"center"}}>
-          <div style={{display:"flex",justifyContent:"center",gap:7,marginBottom:14}}>
-            {[0,1,2,3,4].map(i=><div key={i} style={{width:7,height:7,borderRadius:"50%",background:"var(--a)",animation:`pulse 1s ease ${i*.12}s infinite`}}/>)}
+      {loading && (
+        <div className="card" style={{ padding: "50px 20px", textAlign: "center" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 7, marginBottom: 14 }}>
+            {[0, 1, 2, 3, 4].map(i => <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--a)", animation: `pulse 1s ease ${i * .12}s infinite` }} />)}
           </div>
-          <div style={{fontFamily:"var(--fd)",fontSize:14,color:"var(--a)"}}>{cfg.agents.APEX.name} compiling report...</div>
+          <div style={{ fontFamily: "var(--fd)", fontSize: 14, color: "var(--a)" }}>{cfg.agents.APEX.name} compiling report...</div>
         </div>
       )}
-      {err&&<div style={{color:"var(--red)",fontFamily:"var(--fm)",fontSize:11,padding:10,background:"rgba(255,59,59,.1)",borderRadius:5,marginBottom:12}}>⚠ {err}</div>}
-      {report&&(
-        <div className="card" style={{padding:22,borderTop:"3px solid var(--a)"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18,paddingBottom:14,borderBottom:"1px solid var(--b1)"}}>
-            <div style={{display:"flex",alignItems:"center",gap:11}}>
-              <Avatar id="APEX" size={38} dot level cfg={cfg}/>
+      {err && <div style={{ color: "var(--red)", fontFamily: "var(--fm)", fontSize: 11, padding: 10, background: "rgba(255,59,59,.1)", borderRadius: 5, marginBottom: 12 }}>⚠ {err}</div>}
+      {report && (
+        <div className="card" style={{ padding: 22, borderTop: "3px solid var(--a)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, paddingBottom: 14, borderBottom: "1px solid var(--b1)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              <Avatar id="APEX" size={38} dot level cfg={cfg} />
               <div>
-                <div style={{fontFamily:"var(--fd)",fontWeight:800,fontSize:14}}>{cfg.agents.APEX.name} — WEEKLY REPORT</div>
-                <div style={{fontSize:11,color:"var(--t2)"}}>{new Date().toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}</div>
+                <div style={{ fontFamily: "var(--fd)", fontWeight: 800, fontSize: 14 }}>{cfg.agents.APEX.name} — WEEKLY REPORT</div>
+                <div style={{ fontSize: 11, color: "var(--t2)" }}>{new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</div>
               </div>
             </div>
-            <div style={{display:"flex",gap:7}}>
-              <button className="btn btn-g" onClick={()=>navigator.clipboard?.writeText(report)} style={{fontSize:10,padding:"4px 10px"}}>COPY</button>
-              <button className="btn btn-a" onClick={gen} style={{fontSize:10,padding:"4px 10px"}}>REGEN</button>
+            <div style={{ display: "flex", gap: 7 }}>
+              <button className="btn btn-g" onClick={() => navigator.clipboard?.writeText(report)} style={{ fontSize: 10, padding: "4px 10px" }}>COPY</button>
+              <button className="btn btn-a" onClick={gen} style={{ fontSize: 10, padding: "4px 10px" }}>REGEN</button>
             </div>
           </div>
-          <pre style={{fontSize:13,lineHeight:1.9,whiteSpace:"pre-wrap",color:"var(--t1)",fontFamily:"var(--fb)"}}>{report}</pre>
+          <pre style={{ fontSize: 13, lineHeight: 1.9, whiteSpace: "pre-wrap", color: "var(--t1)", fontFamily: "var(--fb)" }}>{report}</pre>
         </div>
       )}
     </div>
@@ -1957,7 +1962,7 @@ function Report({tasks, notify, cfg}) {
 // ─────────────────────────────────────────────────────────────────────────────
 // ORG CHART
 // ─────────────────────────────────────────────────────────────────────────────
-function OrgChart({cfg, setActive, setChatAgent, tasks}) {
+function OrgChart({ cfg, setActive, setChatAgent, tasks }) {
   const agents = Object.entries(cfg.agents);
   const [apex, ...reports] = agents;
 
@@ -1965,40 +1970,40 @@ function OrgChart({cfg, setActive, setChatAgent, tasks}) {
 
   return (
     <div className="fu">
-      <div style={{marginBottom:22}}>
-        <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Org Chart</h1>
-        <p style={{color:"var(--t2)",fontSize:13}}>Your AI executive team. Click any agent to open their chat.</p>
+      <div style={{ marginBottom: 22 }}>
+        <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Org Chart</h1>
+        <p style={{ color: "var(--t2)", fontSize: 13 }}>Your AI executive team. Click any agent to open their chat.</p>
       </div>
-      <div style={{display:"flex",justifyContent:"center",marginBottom:22}}>
-        <div className="card" onClick={()=>goToChat(apex[0])} style={{padding:"18px 28px",textAlign:"center",borderTop:`3px solid ${apex[1].color}`,boxShadow:`0 0 28px ${apex[1].color}15`,width:200,cursor:"pointer",transition:"transform .14s"}}
-          onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
-          onMouseLeave={e=>e.currentTarget.style.transform=""}>
-          <Avatar id={apex[0]} size={50} dot level cfg={cfg}/>
-          <div style={{fontFamily:"var(--fd)",fontSize:16,fontWeight:800,marginTop:9}}>{apex[1].name}</div>
-          <div style={{fontSize:11,color:apex[1].color,fontFamily:"var(--fm)",marginBottom:7}}>{apex[1].role}</div>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}>
+        <div className="card" onClick={() => goToChat(apex[0])} style={{ padding: "18px 28px", textAlign: "center", borderTop: `3px solid ${apex[1].color}`, boxShadow: `0 0 28px ${apex[1].color}15`, width: 200, cursor: "pointer", transition: "transform .14s" }}
+          onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+          onMouseLeave={e => e.currentTarget.style.transform = ""}>
+          <Avatar id={apex[0]} size={50} dot level cfg={cfg} />
+          <div style={{ fontFamily: "var(--fd)", fontSize: 16, fontWeight: 800, marginTop: 9 }}>{apex[1].name}</div>
+          <div style={{ fontSize: 11, color: apex[1].color, fontFamily: "var(--fm)", marginBottom: 7 }}>{apex[1].role}</div>
           <span className="tag tg">COMMANDER</span>
-          {(()=>{const t=tasks?.find(x=>x.agent===apex[0]&&x.status==="in_progress"); return t?<div style={{fontSize:9,color:"var(--t2)",fontFamily:"var(--fm)",marginTop:6,lineHeight:1.3}}>{t.title.substring(0,28)}...</div>:null;})()}
+          {(() => { const t = tasks?.find(x => x.agent === apex[0] && x.status === "in_progress"); return t ? <div style={{ fontSize: 9, color: "var(--t2)", fontFamily: "var(--fm)", marginTop: 6, lineHeight: 1.3 }}>{t.title.substring(0, 28)}...</div> : null; })()}
         </div>
       </div>
-      <div style={{display:"flex",justifyContent:"center",height:18}}>
-        <div style={{width:2,background:`linear-gradient(var(--a),var(--b2))`}}/>
+      <div style={{ display: "flex", justifyContent: "center", height: 18 }}>
+        <div style={{ width: 2, background: `linear-gradient(var(--a),var(--b2))` }} />
       </div>
-      <div style={{width:"88%",margin:"0 auto",height:1,background:`linear-gradient(90deg,transparent,var(--b2),transparent)`}}/>
-      <div style={{display:"grid",gridTemplateColumns:`repeat(${reports.length},1fr)`,gap:10,marginTop:20}}>
-        {reports.map(([id,a],i)=>{
-          const t = tasks?.find(x=>x.agent===id&&x.status==="in_progress");
+      <div style={{ width: "88%", margin: "0 auto", height: 1, background: `linear-gradient(90deg,transparent,var(--b2),transparent)` }} />
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${reports.length},1fr)`, gap: 10, marginTop: 20 }}>
+        {reports.map(([id, a], i) => {
+          const t = tasks?.find(x => x.agent === id && x.status === "in_progress");
           return (
-            <div key={id} className="card fu" onClick={()=>goToChat(id)} style={{padding:"14px 10px",textAlign:"center",borderTop:`2px solid ${a.color}`,animationDelay:`${i*.07}s`,cursor:"pointer",transition:"transform .14s"}}
-              onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
-              onMouseLeave={e=>e.currentTarget.style.transform=""}>
-              <Avatar id={id} size={36} dot level cfg={cfg}/>
-              <div style={{fontFamily:"var(--fd)",fontSize:13,fontWeight:800,marginTop:8,marginBottom:2}}>{a.name}</div>
-              <div style={{fontSize:9,color:a.color,fontFamily:"var(--fm)",marginBottom:7}}>{a.role}</div>
-              <div style={{marginBottom:7}}><XPBar id={id} cfg={cfg}/></div>
-              <div style={{fontSize:9,color:"var(--t3)",fontFamily:"var(--fm)",lineHeight:1.3,minHeight:24}}>
-                {t ? t.title.substring(0,28)+"..." : "Standby"}
+            <div key={id} className="card fu" onClick={() => goToChat(id)} style={{ padding: "14px 10px", textAlign: "center", borderTop: `2px solid ${a.color}`, animationDelay: `${i * .07}s`, cursor: "pointer", transition: "transform .14s" }}
+              onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+              onMouseLeave={e => e.currentTarget.style.transform = ""}>
+              <Avatar id={id} size={36} dot level cfg={cfg} />
+              <div style={{ fontFamily: "var(--fd)", fontSize: 13, fontWeight: 800, marginTop: 8, marginBottom: 2 }}>{a.name}</div>
+              <div style={{ fontSize: 9, color: a.color, fontFamily: "var(--fm)", marginBottom: 7 }}>{a.role}</div>
+              <div style={{ marginBottom: 7 }}><XPBar id={id} cfg={cfg} /></div>
+              <div style={{ fontSize: 9, color: "var(--t3)", fontFamily: "var(--fm)", lineHeight: 1.3, minHeight: 24 }}>
+                {t ? t.title.substring(0, 28) + "..." : "Standby"}
               </div>
-              <div style={{marginTop:6,fontSize:9,color:a.color,fontFamily:"var(--fm)",opacity:.7}}>CHAT →</div>
+              <div style={{ marginTop: 6, fontSize: 9, color: a.color, fontFamily: "var(--fm)", opacity: .7 }}>CHAT →</div>
             </div>
           );
         })}
@@ -2011,118 +2016,118 @@ function OrgChart({cfg, setActive, setChatAgent, tasks}) {
 // CONTENT TRACKER
 // ─────────────────────────────────────────────────────────────────────────────
 const DEFAULT_TRACKER = {
-  stats: {ig_followers:0, yt_subscribers:0, ig_views:0, yt_views:0, revenue:0, clients:0},
+  stats: { ig_followers: 0, yt_subscribers: 0, ig_views: 0, yt_views: 0, revenue: 0, clients: 0 },
   top: [
-    {t:"POV: your mom's reaction...", v:2100},
-    {t:"The Content System I use...", v:1100},
-    {t:"Bro this is a SCAM", v:1000},
-    {t:"I shut down my $20k/m...", v:600},
-    {t:"The exact offer I charge...", v:500},
+    { t: "POV: your mom's reaction...", v: 2100 },
+    { t: "The Content System I use...", v: 1100 },
+    { t: "Bro this is a SCAM", v: 1000 },
+    { t: "I shut down my $20k/m...", v: 600 },
+    { t: "The exact offer I charge...", v: 500 },
   ]
 };
 
 function Tracker() {
-  const [data, setData]     = useState(null);
+  const [data, setData] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft]   = useState(null);
+  const [draft, setDraft] = useState(null);
   const [editTop, setEditTop] = useState(false);
   const loaded = useRef(false);
 
-  useEffect(()=>{ sGet("apex_tracker_v1", DEFAULT_TRACKER).then(d=>{ setData(d||DEFAULT_TRACKER); loaded.current=true; }); },[]);
-  useEffect(()=>{ if(loaded.current && data) sSet("apex_tracker_v1", data); },[data]);
+  useEffect(() => { sGet("apex_tracker_v1", DEFAULT_TRACKER).then(d => { setData(d || DEFAULT_TRACKER); loaded.current = true; }); }, []);
+  useEffect(() => { if (loaded.current && data) sSet("apex_tracker_v1", data); }, [data]);
 
-  if(!data) return null;
-  const {stats, top} = data;
-  const mx = Math.max(...top.map(t=>t.v), 1);
+  if (!data) return null;
+  const { stats, top } = data;
+  const mx = Math.max(...top.map(t => t.v), 1);
 
-  const saveStats = () => { setData(p=>({...p,stats:draft})); setEditing(false); };
-  const updateTop = (i, field, val) => setData(p=>({ ...p, top: p.top.map((x,idx)=>idx===i?{...x,[field]:field==="v"?Number(val)||0:val}:x) }));
-  const addTopItem = () => setData(p=>({...p,top:[...p.top,{t:"New piece",v:0}]}));
-  const delTopItem = (i) => setData(p=>({...p,top:p.top.filter((_,idx)=>idx!==i)}));
+  const saveStats = () => { setData(p => ({ ...p, stats: draft })); setEditing(false); };
+  const updateTop = (i, field, val) => setData(p => ({ ...p, top: p.top.map((x, idx) => idx === i ? { ...x, [field]: field === "v" ? Number(val) || 0 : val } : x) }));
+  const addTopItem = () => setData(p => ({ ...p, top: [...p.top, { t: "New piece", v: 0 }] }));
+  const delTopItem = (i) => setData(p => ({ ...p, top: p.top.filter((_, idx) => idx !== i) }));
 
   const STAT_FIELDS = [
-    {k:"ig_followers", l:"IG FOLLOWERS",   c:"var(--purple)", fmt:n=>n>=1000?`${(n/1000).toFixed(1)}K`:n},
-    {k:"yt_subscribers",l:"YT SUBSCRIBERS",c:"var(--red)",    fmt:n=>n>=1000?`${(n/1000).toFixed(1)}K`:n},
-    {k:"ig_views",     l:"IG VIEWS / MO",  c:"var(--cyan)",   fmt:n=>n>=1000?`${(n/1000).toFixed(1)}K`:n},
-    {k:"yt_views",     l:"YT VIEWS / MO",  c:"#3B82F6",       fmt:n=>n>=1000?`${(n/1000).toFixed(1)}K`:n},
-    {k:"revenue",      l:"MRR ($)",         c:"var(--green)",  fmt:n=>`$${n>=1000?`${(n/1000).toFixed(1)}K`:n}`},
-    {k:"clients",      l:"ACTIVE CLIENTS",  c:"var(--a)",      fmt:n=>n},
+    { k: "ig_followers", l: "IG FOLLOWERS", c: "var(--purple)", fmt: n => n >= 1000 ? `${(n / 1000).toFixed(1)}K` : n },
+    { k: "yt_subscribers", l: "YT SUBSCRIBERS", c: "var(--red)", fmt: n => n >= 1000 ? `${(n / 1000).toFixed(1)}K` : n },
+    { k: "ig_views", l: "IG VIEWS / MO", c: "var(--cyan)", fmt: n => n >= 1000 ? `${(n / 1000).toFixed(1)}K` : n },
+    { k: "yt_views", l: "YT VIEWS / MO", c: "#3B82F6", fmt: n => n >= 1000 ? `${(n / 1000).toFixed(1)}K` : n },
+    { k: "revenue", l: "MRR ($)", c: "var(--green)", fmt: n => `$${n >= 1000 ? `${(n / 1000).toFixed(1)}K` : n}` },
+    { k: "clients", l: "ACTIVE CLIENTS", c: "var(--a)", fmt: n => n },
   ];
 
   return (
     <div className="fu">
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
         <div>
-          <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Content Tracker</h1>
-          <p style={{color:"var(--t2)",fontSize:13}}>Your numbers. Updated manually until API integration is live.</p>
+          <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Content Tracker</h1>
+          <p style={{ color: "var(--t2)", fontSize: 13 }}>Your numbers. Updated manually until API integration is live.</p>
         </div>
-        <button className="btn btn-g" onClick={()=>{ setDraft({...stats}); setEditing(true); }}>EDIT STATS</button>
+        <button className="btn btn-g" onClick={() => { setDraft({ ...stats }); setEditing(true); }}>EDIT STATS</button>
       </div>
 
       {/* Stats grid */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:10,marginBottom:14}}>
-        {STAT_FIELDS.map(f=>(
-          <div key={f.k} className="card" style={{padding:"13px 15px",borderTop:`2px solid ${f.c}`}}>
-            <div className="stat" style={{color:f.c,marginBottom:3,fontSize:22}}>{f.fmt(stats[f.k])}</div>
-            <div style={{fontSize:8,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em"}}>{f.l}</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 10, marginBottom: 14 }}>
+        {STAT_FIELDS.map(f => (
+          <div key={f.k} className="card" style={{ padding: "13px 15px", borderTop: `2px solid ${f.c}` }}>
+            <div className="stat" style={{ color: f.c, marginBottom: 3, fontSize: 22 }}>{f.fmt(stats[f.k])}</div>
+            <div style={{ fontSize: 8, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em" }}>{f.l}</div>
           </div>
         ))}
       </div>
 
       {/* Edit stats modal */}
       {editing && draft && (
-        <div style={{position:"fixed",inset:0,zIndex:500,background:"rgba(5,7,13,.85)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}
-          onClick={e=>e.target===e.currentTarget&&setEditing(false)}>
-          <div className="card fu" style={{width:"100%",maxWidth:480,padding:24,borderTop:"3px solid var(--a)"}}>
-            <div style={{fontFamily:"var(--fd)",fontWeight:800,fontSize:16,marginBottom:16}}>Update Your Stats</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
-              {STAT_FIELDS.map(f=>(
+        <div style={{ position: "fixed", inset: 0, zIndex: 500, background: "rgba(5,7,13,.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+          onClick={e => e.target === e.currentTarget && setEditing(false)}>
+          <div className="card fu" style={{ width: "100%", maxWidth: 480, padding: 24, borderTop: "3px solid var(--a)" }}>
+            <div style={{ fontFamily: "var(--fd)", fontWeight: 800, fontSize: 16, marginBottom: 16 }}>Update Your Stats</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
+              {STAT_FIELDS.map(f => (
                 <div key={f.k}>
-                  <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:5}}>{f.l}</label>
-                  <input className="input" type="number" min="0" value={draft[f.k]} onChange={e=>setDraft(p=>({...p,[f.k]:Number(e.target.value)||0}))} style={{fontSize:13}}/>
+                  <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 5 }}>{f.l}</label>
+                  <input className="input" type="number" min="0" value={draft[f.k]} onChange={e => setDraft(p => ({ ...p, [f.k]: Number(e.target.value) || 0 }))} style={{ fontSize: 13 }} />
                 </div>
               ))}
             </div>
-            <div style={{display:"flex",gap:8}}>
-              <button className="btn btn-a" onClick={saveStats} style={{flex:1,justifyContent:"center",padding:"10px"}}>SAVE STATS</button>
-              <button className="btn btn-g" onClick={()=>setEditing(false)} style={{padding:"10px 16px"}}>CANCEL</button>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn btn-a" onClick={saveStats} style={{ flex: 1, justifyContent: "center", padding: "10px" }}>SAVE STATS</button>
+              <button className="btn btn-g" onClick={() => setEditing(false)} style={{ padding: "10px 16px" }}>CANCEL</button>
             </div>
           </div>
         </div>
       )}
 
       {/* Top performing content */}
-      <div className="card" style={{padding:16,marginBottom:14}}>
+      <div className="card" style={{ padding: 16, marginBottom: 14 }}>
         <SH>TOP PERFORMING CONTENT
-          <button className="btn btn-g" onClick={()=>setEditTop(p=>!p)} style={{fontSize:9,padding:"2px 8px"}}>{editTop?"DONE":"EDIT"}</button>
+          <button className="btn btn-g" onClick={() => setEditTop(p => !p)} style={{ fontSize: 9, padding: "2px 8px" }}>{editTop ? "DONE" : "EDIT"}</button>
         </SH>
         {editTop ? (
-          <div style={{display:"flex",flexDirection:"column",gap:7}}>
-            {top.map((c,i)=>(
-              <div key={i} style={{display:"flex",gap:7,alignItems:"center"}}>
-                <input className="input" value={c.t} onChange={e=>updateTop(i,"t",e.target.value)} style={{flex:1,fontSize:11,padding:"5px 9px"}} placeholder="Content title"/>
-                <input className="input" type="number" value={c.v} onChange={e=>updateTop(i,"v",e.target.value)} style={{width:90,fontSize:11,padding:"5px 9px"}} placeholder="Views"/>
-                <button onClick={()=>delTopItem(i)} style={{background:"none",border:"none",color:"var(--red)",cursor:"pointer",fontSize:14,flexShrink:0}}>✕</button>
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            {top.map((c, i) => (
+              <div key={i} style={{ display: "flex", gap: 7, alignItems: "center" }}>
+                <input className="input" value={c.t} onChange={e => updateTop(i, "t", e.target.value)} style={{ flex: 1, fontSize: 11, padding: "5px 9px" }} placeholder="Content title" />
+                <input className="input" type="number" value={c.v} onChange={e => updateTop(i, "v", e.target.value)} style={{ width: 90, fontSize: 11, padding: "5px 9px" }} placeholder="Views" />
+                <button onClick={() => delTopItem(i)} style={{ background: "none", border: "none", color: "var(--red)", cursor: "pointer", fontSize: 14, flexShrink: 0 }}>✕</button>
               </div>
             ))}
-            <button className="btn btn-g" onClick={addTopItem} style={{fontSize:10,justifyContent:"center",marginTop:4}}>+ ADD PIECE</button>
+            <button className="btn btn-g" onClick={addTopItem} style={{ fontSize: 10, justifyContent: "center", marginTop: 4 }}>+ ADD PIECE</button>
           </div>
         ) : (
-          <div style={{display:"flex",alignItems:"flex-end",gap:10,height:130,marginBottom:10}}>
-            {top.map((c,i)=>(
-              <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-                <div style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t2)",marginBottom:3}}>{c.v>=1000?`${(c.v/1000).toFixed(1)}K`:c.v}</div>
-                <div style={{width:"100%",background:"var(--cyan)",height:`${(c.v/mx)*100}px`,borderRadius:"4px 4px 0 0",opacity:.75,minHeight:4,transition:"height .4s"}}/>
-                <div style={{fontSize:9,fontFamily:"var(--fm)",color:"var(--t3)",textAlign:"center",lineHeight:1.3}}>{c.t.substring(0,18)}{c.t.length>18?"...":""}</div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 130, marginBottom: 10 }}>
+            {top.map((c, i) => (
+              <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                <div style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t2)", marginBottom: 3 }}>{c.v >= 1000 ? `${(c.v / 1000).toFixed(1)}K` : c.v}</div>
+                <div style={{ width: "100%", background: "var(--cyan)", height: `${(c.v / mx) * 100}px`, borderRadius: "4px 4px 0 0", opacity: .75, minHeight: 4, transition: "height .4s" }} />
+                <div style={{ fontSize: 9, fontFamily: "var(--fm)", color: "var(--t3)", textAlign: "center", lineHeight: 1.3 }}>{c.t.substring(0, 18)}{c.t.length > 18 ? "..." : ""}</div>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      <div className="card" style={{padding:14}}>
-        <div style={{fontSize:12,color:"var(--t2)",lineHeight:1.6}}>
-          <span style={{color:"var(--a)",fontWeight:600}}>To enable live data:</span> Ask <span style={{color:"var(--cyan)"}}>FORGE</span> to generate the Instagram Graph API + YouTube Data API integration. Requires a Meta Developer App and Google Cloud Console project.
+      <div className="card" style={{ padding: 14 }}>
+        <div style={{ fontSize: 12, color: "var(--t2)", lineHeight: 1.6 }}>
+          <span style={{ color: "var(--a)", fontWeight: 600 }}>To enable live data:</span> Ask <span style={{ color: "var(--cyan)" }}>FORGE</span> to generate the Instagram Graph API + YouTube Data API integration. Requires a Meta Developer App and Google Cloud Console project.
         </div>
       </div>
     </div>
@@ -2133,35 +2138,35 @@ function Tracker() {
 // PIPELINE — interactive, persistent
 // ─────────────────────────────────────────────────────────────────────────────
 const STAGE_DEFS = [
-  {l:"IDEAS",     c:"var(--purple)"},
-  {l:"RESEARCH",  c:"#3B82F6"},
-  {l:"SCRIPTING", c:"var(--amber)"},
-  {l:"PRODUCTION",c:"var(--red)"},
-  {l:"REVIEW",    c:"var(--cyan)"},
-  {l:"PUBLISHED", c:"var(--green)"},
+  { l: "IDEAS", c: "var(--purple)" },
+  { l: "RESEARCH", c: "#3B82F6" },
+  { l: "SCRIPTING", c: "var(--amber)" },
+  { l: "PRODUCTION", c: "var(--red)" },
+  { l: "REVIEW", c: "var(--cyan)" },
+  { l: "PUBLISHED", c: "var(--green)" },
 ];
 
 const DEFAULT_PIPELINE = [
-  {id:"p1", title:"How I replaced my team with AI",   stage:"IDEAS"},
-  {id:"p2", title:"My $30k/mo stack revealed",         stage:"IDEAS"},
-  {id:"p3", title:"The system nobody shows you",       stage:"IDEAS"},
-  {id:"p4", title:"Why most content falls flat",       stage:"IDEAS"},
-  {id:"p5", title:"Competitor breakdown LIVE",         stage:"IDEAS"},
-  {id:"p6", title:"AI in business 2026",               stage:"RESEARCH"},
-  {id:"p7", title:"Hook pattern analysis",             stage:"RESEARCH"},
-  {id:"p8", title:"Competitor deep dive",              stage:"RESEARCH"},
-  {id:"p9", title:"Algorithm shift report",            stage:"RESEARCH"},
-  {id:"p10",title:"APEX OS reveal reel",               stage:"SCRIPTING"},
-  {id:"p11",title:"Sales system breakdown",            stage:"SCRIPTING"},
-  {id:"p12",title:"Day in the life: AI CEO",           stage:"SCRIPTING"},
-  {id:"p13",title:"$0 to $10K blueprint",              stage:"PRODUCTION"},
-  {id:"p14",title:"My biggest L story",                stage:"PRODUCTION"},
-  {id:"p15",title:"AI replaces employees — hot take",  stage:"REVIEW"},
-  {id:"p16",title:"POV: your mom's reaction...",       stage:"PUBLISHED"},
-  {id:"p17",title:"This is FREE sauce",                stage:"PUBLISHED"},
-  {id:"p18",title:"The world is ending...",            stage:"PUBLISHED"},
-  {id:"p19",title:"$30K at 19 — no degree",           stage:"PUBLISHED"},
-  {id:"p20",title:"My AI team breakdown",              stage:"PUBLISHED"},
+  { id: "p1", title: "How I replaced my team with AI", stage: "IDEAS" },
+  { id: "p2", title: "My $30k/mo stack revealed", stage: "IDEAS" },
+  { id: "p3", title: "The system nobody shows you", stage: "IDEAS" },
+  { id: "p4", title: "Why most content falls flat", stage: "IDEAS" },
+  { id: "p5", title: "Competitor breakdown LIVE", stage: "IDEAS" },
+  { id: "p6", title: "AI in business 2026", stage: "RESEARCH" },
+  { id: "p7", title: "Hook pattern analysis", stage: "RESEARCH" },
+  { id: "p8", title: "Competitor deep dive", stage: "RESEARCH" },
+  { id: "p9", title: "Algorithm shift report", stage: "RESEARCH" },
+  { id: "p10", title: "APEX OS reveal reel", stage: "SCRIPTING" },
+  { id: "p11", title: "Sales system breakdown", stage: "SCRIPTING" },
+  { id: "p12", title: "Day in the life: AI CEO", stage: "SCRIPTING" },
+  { id: "p13", title: "$0 to $10K blueprint", stage: "PRODUCTION" },
+  { id: "p14", title: "My biggest L story", stage: "PRODUCTION" },
+  { id: "p15", title: "AI replaces employees — hot take", stage: "REVIEW" },
+  { id: "p16", title: "POV: your mom's reaction...", stage: "PUBLISHED" },
+  { id: "p17", title: "This is FREE sauce", stage: "PUBLISHED" },
+  { id: "p18", title: "The world is ending...", stage: "PUBLISHED" },
+  { id: "p19", title: "$30K at 19 — no degree", stage: "PUBLISHED" },
+  { id: "p20", title: "My AI team breakdown", stage: "PUBLISHED" },
 ];
 
 function Pipeline() {
@@ -2171,115 +2176,115 @@ function Pipeline() {
   const [moving, setMoving] = useState(null); // item id being moved
   const loaded = useRef(false);
 
-  useEffect(()=>{
-    sGet("apex_pipeline_v1", DEFAULT_PIPELINE).then(d=>{ 
-      setItems(Array.isArray(d) ? d : DEFAULT_PIPELINE); 
-      loaded.current=true; 
+  useEffect(() => {
+    sGet("apex_pipeline_v1", DEFAULT_PIPELINE).then(d => {
+      setItems(Array.isArray(d) ? d : DEFAULT_PIPELINE);
+      loaded.current = true;
     });
-  },[]);
-  useEffect(()=>{ if(loaded.current && items) sSet("apex_pipeline_v1", items); },[items]);
+  }, []);
+  useEffect(() => { if (loaded.current && items) sSet("apex_pipeline_v1", items); }, [items]);
 
-  if(!items) return <div style={{color:"var(--t2)",padding:40,textAlign:"center",fontFamily:"var(--fm)"}}>Loading pipeline...</div>;
+  if (!items) return <div style={{ color: "var(--t2)", padding: 40, textAlign: "center", fontFamily: "var(--fm)" }}>Loading pipeline...</div>;
 
   const addItem = (stage) => {
-    if(!newTitle.trim()) return;
-    const item = { id:`p${Date.now()}`, title:newTitle.trim(), stage };
-    setItems(p=>[...p, item]);
+    if (!newTitle.trim()) return;
+    const item = { id: `p${Date.now()}`, title: newTitle.trim(), stage };
+    setItems(p => [...p, item]);
     setNewTitle(""); setAddingTo(null);
   };
 
-  const deleteItem = (id) => setItems(p=>p.filter(x=>x.id!==id));
+  const deleteItem = (id) => setItems(p => p.filter(x => x.id !== id));
 
   const moveItem = (id, newStage) => {
-    setItems(p=>p.map(x=>x.id===id?{...x,stage:newStage}:x));
+    setItems(p => p.map(x => x.id === id ? { ...x, stage: newStage } : x));
     setMoving(null);
   };
 
   return (
     <div className="fu">
-      <div style={{marginBottom:22}}>
-        <h1 style={{fontFamily:"var(--fd)",fontSize:26,fontWeight:800,letterSpacing:"-.02em",marginBottom:4}}>Content Pipeline</h1>
-        <p style={{color:"var(--t2)",fontSize:13}}>Every piece of content tracked from idea to published.</p>
+      <div style={{ marginBottom: 22 }}>
+        <h1 style={{ fontFamily: "var(--fd)", fontSize: 26, fontWeight: 800, letterSpacing: "-.02em", marginBottom: 4 }}>Content Pipeline</h1>
+        <p style={{ color: "var(--t2)", fontSize: 13 }}>Every piece of content tracked from idea to published.</p>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:9}}>
-        {STAGE_DEFS.map(s=>{
-          const stageItems = items.filter(x=>x.stage===s.l);
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 9 }}>
+        {STAGE_DEFS.map(s => {
+          const stageItems = items.filter(x => x.stage === s.l);
           return (
-            <div key={s.l} className="card" style={{overflow:"hidden"}}>
+            <div key={s.l} className="card" style={{ overflow: "hidden" }}>
               {/* Header */}
-              <div style={{padding:"9px 10px",background:`${s.c}12`,borderBottom:"1px solid var(--b1)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <div style={{ padding: "9px 10px", background: `${s.c}12`, borderBottom: "1px solid var(--b1)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div>
-                  <div style={{fontFamily:"var(--fd)",fontSize:9,fontWeight:700,color:s.c,letterSpacing:".1em",marginBottom:2}}>{s.l}</div>
-                  <div style={{fontFamily:"var(--fd)",fontSize:20,fontWeight:900,lineHeight:1}}>{stageItems.length}</div>
+                  <div style={{ fontFamily: "var(--fd)", fontSize: 9, fontWeight: 700, color: s.c, letterSpacing: ".1em", marginBottom: 2 }}>{s.l}</div>
+                  <div style={{ fontFamily: "var(--fd)", fontSize: 20, fontWeight: 900, lineHeight: 1 }}>{stageItems.length}</div>
                 </div>
-                <button onClick={()=>{ setAddingTo(s.l); setNewTitle(""); }} style={{
-                  width:22,height:22,borderRadius:"50%",border:`1px solid ${s.c}40`,
-                  background:`${s.c}15`,color:s.c,fontSize:15,lineHeight:1,cursor:"pointer",
-                  display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,
+                <button onClick={() => { setAddingTo(s.l); setNewTitle(""); }} style={{
+                  width: 22, height: 22, borderRadius: "50%", border: `1px solid ${s.c}40`,
+                  background: `${s.c}15`, color: s.c, fontSize: 15, lineHeight: 1, cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                 }}>+</button>
               </div>
 
               {/* Add input */}
-              {addingTo===s.l && (
-                <div style={{padding:"7px 7px",borderBottom:"1px solid var(--b1)"}}>
+              {addingTo === s.l && (
+                <div style={{ padding: "7px 7px", borderBottom: "1px solid var(--b1)" }}>
                   <input
                     autoFocus
                     className="input"
                     value={newTitle}
-                    onChange={e=>setNewTitle(e.target.value)}
-                    onKeyDown={e=>{ if(e.key==="Enter") addItem(s.l); if(e.key==="Escape") setAddingTo(null); }}
+                    onChange={e => setNewTitle(e.target.value)}
+                    onKeyDown={e => { if (e.key === "Enter") addItem(s.l); if (e.key === "Escape") setAddingTo(null); }}
                     placeholder="Title..."
-                    style={{fontSize:11,padding:"5px 8px",marginBottom:5}}
+                    style={{ fontSize: 11, padding: "5px 8px", marginBottom: 5 }}
                   />
-                  <div style={{display:"flex",gap:4}}>
-                    <button className="btn btn-a" onClick={()=>addItem(s.l)} style={{fontSize:9,padding:"3px 9px",flex:1}}>ADD</button>
-                    <button className="btn btn-g" onClick={()=>setAddingTo(null)} style={{fontSize:9,padding:"3px 9px"}}>✕</button>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    <button className="btn btn-a" onClick={() => addItem(s.l)} style={{ fontSize: 9, padding: "3px 9px", flex: 1 }}>ADD</button>
+                    <button className="btn btn-g" onClick={() => setAddingTo(null)} style={{ fontSize: 9, padding: "3px 9px" }}>✕</button>
                   </div>
                 </div>
               )}
 
               {/* Items */}
-              <div style={{padding:"7px 7px",display:"flex",flexDirection:"column",gap:4,maxHeight:420,overflowY:"auto"}}>
-                {stageItems.map(item=>(
-                  <div key={item.id} style={{fontSize:10,padding:"5px 7px",background:"var(--s2)",borderRadius:3,lineHeight:1.3,borderLeft:`2px solid ${s.c}`,color:"var(--t2)",position:"relative",group:"true"}}>
-                    <div style={{paddingRight:32}}>{item.title}</div>
+              <div style={{ padding: "7px 7px", display: "flex", flexDirection: "column", gap: 4, maxHeight: 420, overflowY: "auto" }}>
+                {stageItems.map(item => (
+                  <div key={item.id} style={{ fontSize: 10, padding: "5px 7px", background: "var(--s2)", borderRadius: 3, lineHeight: 1.3, borderLeft: `2px solid ${s.c}`, color: "var(--t2)", position: "relative", group: "true" }}>
+                    <div style={{ paddingRight: 32 }}>{item.title}</div>
                     {/* Actions */}
-                    <div style={{position:"absolute",top:3,right:3,display:"flex",gap:2}}>
+                    <div style={{ position: "absolute", top: 3, right: 3, display: "flex", gap: 2 }}>
                       {/* Move dropdown */}
-                      <div style={{position:"relative"}}>
-                        <button onClick={()=>setMoving(moving===item.id?null:item.id)} title="Move stage" style={{
-                          background:"none",border:"none",color:"var(--t3)",cursor:"pointer",
-                          fontSize:10,padding:"1px 3px",lineHeight:1,borderRadius:2,
+                      <div style={{ position: "relative" }}>
+                        <button onClick={() => setMoving(moving === item.id ? null : item.id)} title="Move stage" style={{
+                          background: "none", border: "none", color: "var(--t3)", cursor: "pointer",
+                          fontSize: 10, padding: "1px 3px", lineHeight: 1, borderRadius: 2,
                         }}>⇄</button>
-                        {moving===item.id && (
+                        {moving === item.id && (
                           <div style={{
-                            position:"absolute",right:0,top:16,zIndex:50,
-                            background:"var(--s3)",border:"1px solid var(--b2)",
-                            borderRadius:4,minWidth:110,boxShadow:"0 4px 16px rgba(0,0,0,.5)",overflow:"hidden",
+                            position: "absolute", right: 0, top: 16, zIndex: 50,
+                            background: "var(--s3)", border: "1px solid var(--b2)",
+                            borderRadius: 4, minWidth: 110, boxShadow: "0 4px 16px rgba(0,0,0,.5)", overflow: "hidden",
                           }}>
-                            {STAGE_DEFS.filter(sd=>sd.l!==s.l).map(sd=>(
-                              <button key={sd.l} onClick={()=>moveItem(item.id,sd.l)} style={{
-                                display:"block",width:"100%",textAlign:"left",padding:"6px 10px",
-                                background:"none",border:"none",color:sd.c,fontSize:10,
-                                fontFamily:"var(--fm)",letterSpacing:".07em",cursor:"pointer",
+                            {STAGE_DEFS.filter(sd => sd.l !== s.l).map(sd => (
+                              <button key={sd.l} onClick={() => moveItem(item.id, sd.l)} style={{
+                                display: "block", width: "100%", textAlign: "left", padding: "6px 10px",
+                                background: "none", border: "none", color: sd.c, fontSize: 10,
+                                fontFamily: "var(--fm)", letterSpacing: ".07em", cursor: "pointer",
                               }}
-                              onMouseEnter={e=>e.currentTarget.style.background="var(--s4)"}
-                              onMouseLeave={e=>e.currentTarget.style.background="none"}
+                                onMouseEnter={e => e.currentTarget.style.background = "var(--s4)"}
+                                onMouseLeave={e => e.currentTarget.style.background = "none"}
                               >{sd.l}</button>
                             ))}
                           </div>
                         )}
                       </div>
                       {/* Delete */}
-                      <button onClick={()=>deleteItem(item.id)} title="Delete" style={{
-                        background:"none",border:"none",color:"var(--t3)",cursor:"pointer",
-                        fontSize:10,padding:"1px 3px",lineHeight:1,borderRadius:2,
+                      <button onClick={() => deleteItem(item.id)} title="Delete" style={{
+                        background: "none", border: "none", color: "var(--t3)", cursor: "pointer",
+                        fontSize: 10, padding: "1px 3px", lineHeight: 1, borderRadius: 2,
                       }}>✕</button>
                     </div>
                   </div>
                 ))}
-                {stageItems.length===0 && (
-                  <div style={{fontSize:10,color:"var(--t3)",fontFamily:"var(--fm)",textAlign:"center",padding:"12px 0"}}>empty</div>
+                {stageItems.length === 0 && (
+                  <div style={{ fontSize: 10, color: "var(--t3)", fontFamily: "var(--fm)", textAlign: "center", padding: "12px 0" }}>empty</div>
                 )}
               </div>
             </div>
@@ -2294,61 +2299,61 @@ function Pipeline() {
 // ROOT APP
 // ─────────────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [cfg, setCfg]         = useState(DEFAULT_CONFIG);
-  const [onboarded, setOnb]   = useState(false);
-  const [active, setActive]   = useState("dashboard");
-  const [tasks, setTasks]     = useState(DEFAULT_TASKS);
-  const [sops]                = useState(DEFAULT_SOPS);
-  const [skills, setSkills]   = useState(DEFAULT_SKILLS);
+  const [cfg, setCfg] = useState(DEFAULT_CONFIG);
+  const [onboarded, setOnb] = useState(false);
+  const [active, setActive] = useState("dashboard");
+  const [tasks, setTasks] = useState(DEFAULT_TASKS);
+  const [sops] = useState(DEFAULT_SOPS);
+  const [skills, setSkills] = useState(DEFAULT_SKILLS);
   const [chatAgent, setChatAgent] = useState("APEX");
-  const [notif, setNotif]     = useState(null);
+  const [notif, setNotif] = useState(null);
 
   // API Config State
-  const [apiKey, setApiKey]   = useState("");
+  const [apiKey, setApiKey] = useState("");
   const [baseUrl, setBaseUrl] = useState("https://api.groq.com/openai/v1");
-  const [model, setModel]     = useState("llama-3.3-70b-versatile");
+  const [model, setModel] = useState("llama-3.3-70b-versatile");
   const [showApiPopup, setShowApiPopup] = useState(false);
 
   const loaded = useRef(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     Promise.all([
       sGet("apex_cfg", DEFAULT_CONFIG),
       sGet("apex_onboarded", false),
       sGet("apex_tasks_v3", DEFAULT_TASKS),
       sGet("apex_skills_v3", DEFAULT_SKILLS),
-      sGet("llm_api_key", ""), 
+      sGet("llm_api_key", ""),
       sGet("llm_base_url", "https://api.groq.com/openai/v1"),
       sGet("llm_model", "llama-3.3-70b-versatile")
-    ]).then(([c, ob, t, sk, k, b, m])=>{
+    ]).then(([c, ob, t, sk, k, b, m]) => {
       setCfg(c || DEFAULT_CONFIG);
       setOnb(ob || false);
       setTasks(t || DEFAULT_TASKS);
       setSkills(sk || DEFAULT_SKILLS);
-      
+
       setApiKey(k || "");
       setBaseUrl(b || "https://api.groq.com/openai/v1");
       setModel(m || "llama-3.3-70b-versatile");
-      
-      if (!k) setShowApiPopup(true); 
+
+      if (!k) setShowApiPopup(true);
       loaded.current = true;
-    }).catch(()=>{
+    }).catch(() => {
       setCfg(DEFAULT_CONFIG);
       setOnb(false);
       setShowApiPopup(true);
       loaded.current = true;
     });
-  },[]);
+  }, []);
 
-  useEffect(()=>{ if(loaded.current){ sSet("apex_tasks_v3",tasks); }},[tasks]);
-  useEffect(()=>{ if(loaded.current){ sSet("apex_skills_v3",skills); }},[skills]);
-  useEffect(()=>{ if(cfg&&loaded.current){ sSet("apex_cfg",cfg); }},[cfg]);
+  useEffect(() => { if (loaded.current) { sSet("apex_tasks_v3", tasks); } }, [tasks]);
+  useEffect(() => { if (loaded.current) { sSet("apex_skills_v3", skills); } }, [skills]);
+  useEffect(() => { if (cfg && loaded.current) { sSet("apex_cfg", cfg); } }, [cfg]);
 
-  const notify = useCallback((msg)=>{ setNotif(null); setTimeout(()=>setNotif(msg),40); },[]);
+  const notify = useCallback((msg) => { setNotif(null); setTimeout(() => setNotif(msg), 40); }, []);
 
   const completeOnboarding = (newCfg) => {
-    setCfg(newCfg); sSet("apex_cfg",newCfg);
-    setOnb(true); sSet("apex_onboarded",true);
+    setCfg(newCfg); sSet("apex_cfg", newCfg);
+    setOnb(true); sSet("apex_onboarded", true);
   };
 
   const saveApiConfig = () => {
@@ -2359,73 +2364,73 @@ export default function App() {
     notify("API Configuration secured!");
   };
 
-  if(!onboarded) {
+  if (!onboarded) {
     return (
       <>
         <style>{makeCSS(DEFAULT_CONFIG.accentColor)}</style>
-        <Onboarding onComplete={completeOnboarding}/>
+        <Onboarding onComplete={completeOnboarding} />
       </>
     );
   }
 
   const renderView = () => {
-    const p = {cfg, notify, tasks, setTasks};
-    switch(active) {
-      case "dashboard": return <Dashboard {...p} setActive={setActive} setChatAgent={setChatAgent}/>;
-      case "chat":      return <Chat cfg={cfg} notify={notify} initialAgent={chatAgent}/>;
-      case "agents":    return <Agents cfg={cfg} setActive={setActive} setChatAgent={setChatAgent}/>;
-      case "instagram": return <ContentGen platform="instagram" cfg={cfg} notify={notify}/>;
-      case "youtube":   return <ContentGen platform="youtube" cfg={cfg} notify={notify}/>;
-      case "pipeline":  return <Pipeline/>;
-      case "taskboard": return <TaskBoard {...p}/>;
-      case "report":    return <Report tasks={tasks} cfg={cfg} notify={notify}/>;
-      case "saleshub":  return <SalesHub cfg={cfg} notify={notify}/>;
-      case "funnel":    return <Funnel cfg={cfg} notify={notify}/>;
-      case "calls":     return <Calls cfg={cfg} notify={notify}/>;
-      case "skills":    return <Skills skills={skills} setSkills={setSkills} cfg={cfg} notify={notify}/>;
-      case "sops":      return <SOPs sops={sops} cfg={cfg} notify={notify}/>;
-      case "orgchart":  return <OrgChart cfg={cfg} setActive={setActive} setChatAgent={setChatAgent} tasks={tasks}/>;
-      case "settings":  return <Settings cfg={cfg} setCfg={setCfg} notify={notify}/>;
-      default:          return <Dashboard {...p} setActive={setActive}/>;
+    const p = { cfg, notify, tasks, setTasks };
+    switch (active) {
+      case "dashboard": return <Dashboard {...p} setActive={setActive} setChatAgent={setChatAgent} />;
+      case "chat": return <Chat cfg={cfg} notify={notify} initialAgent={chatAgent} />;
+      case "agents": return <Agents cfg={cfg} setActive={setActive} setChatAgent={setChatAgent} />;
+      case "instagram": return <ContentGen platform="instagram" cfg={cfg} notify={notify} />;
+      case "youtube": return <ContentGen platform="youtube" cfg={cfg} notify={notify} />;
+      case "pipeline": return <Pipeline />;
+      case "taskboard": return <TaskBoard {...p} />;
+      case "report": return <Report tasks={tasks} cfg={cfg} notify={notify} />;
+      case "saleshub": return <SalesHub cfg={cfg} notify={notify} />;
+      case "funnel": return <Funnel cfg={cfg} notify={notify} />;
+      case "calls": return <Calls cfg={cfg} notify={notify} />;
+      case "skills": return <Skills skills={skills} setSkills={setSkills} cfg={cfg} notify={notify} />;
+      case "sops": return <SOPs sops={sops} cfg={cfg} notify={notify} />;
+      case "orgchart": return <OrgChart cfg={cfg} setActive={setActive} setChatAgent={setChatAgent} tasks={tasks} />;
+      case "settings": return <Settings cfg={cfg} setCfg={setCfg} notify={notify} />;
+      default: return <Dashboard {...p} setActive={setActive} />;
     }
   };
 
   return (
     <>
       <style>{makeCSS(cfg.accentColor)}</style>
-      <TopBar cfg={cfg} liveCount={7}/>
-      <Sidebar active={active} setActive={setActive} tasks={tasks} cfg={cfg}/>
-      <main style={{marginLeft:"var(--sidebar)",marginTop:"var(--topbar)",minHeight:"calc(100vh - var(--topbar))",padding:"24px 26px 40px",position:"relative",zIndex:1}}>
+      <TopBar cfg={cfg} liveCount={7} />
+      <Sidebar active={active} setActive={setActive} tasks={tasks} cfg={cfg} />
+      <main style={{ marginLeft: "var(--sidebar)", marginTop: "var(--topbar)", minHeight: "calc(100vh - var(--topbar))", padding: "24px 26px 40px", position: "relative", zIndex: 1 }}>
         {renderView()}
       </main>
-      {notif && <Notif key={notif+Date.now()} msg={notif} onClose={()=>setNotif(null)}/>}
+      {notif && <Notif key={notif + Date.now()} msg={notif} onClose={() => setNotif(null)} />}
 
       {showApiPopup && (
-        <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(5,7,13,.85)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
-          <div className="card fu" style={{width:"100%",maxWidth:480,padding:24,borderTop:"3px solid var(--a)"}}>
-            <div style={{fontFamily:"var(--fd)",fontWeight:800,fontSize:18,marginBottom:8}}>System Initialization</div>
-            <div style={{fontSize:13,color:"var(--t2)",marginBottom:16,lineHeight:1.5}}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(5,7,13,.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div className="card fu" style={{ width: "100%", maxWidth: 480, padding: 24, borderTop: "3px solid var(--a)" }}>
+            <div style={{ fontFamily: "var(--fd)", fontWeight: 800, fontSize: 18, marginBottom: 8 }}>System Initialization</div>
+            <div style={{ fontSize: 13, color: "var(--t2)", marginBottom: 16, lineHeight: 1.5 }}>
               Configure your generic Omni-Router to bring the agents online. Defaults to Groq, but works with OpenRouter or any OpenAI-compatible API.
             </div>
-            <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:18}}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
               <div>
-                <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:4}}>API KEY</label>
-                <input className="input" type="password" placeholder="sk-..." value={apiKey} onChange={e=>setApiKey(e.target.value)} />
+                <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 4 }}>API KEY</label>
+                <input className="input" type="password" placeholder="sk-..." value={apiKey} onChange={e => setApiKey(e.target.value)} />
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 <div>
-                  <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:4}}>BASE URL</label>
-                  <input className="input" value={baseUrl} onChange={e=>setBaseUrl(e.target.value)} />
+                  <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 4 }}>BASE URL</label>
+                  <input className="input" value={baseUrl} onChange={e => setBaseUrl(e.target.value)} />
                 </div>
                 <div>
-                  <label style={{fontSize:10,fontFamily:"var(--fm)",color:"var(--t3)",letterSpacing:".1em",display:"block",marginBottom:4}}>MODEL</label>
-                  <input className="input" value={model} onChange={e=>setModel(e.target.value)} />
+                  <label style={{ fontSize: 10, fontFamily: "var(--fm)", color: "var(--t3)", letterSpacing: ".1em", display: "block", marginBottom: 4 }}>MODEL</label>
+                  <input className="input" value={model} onChange={e => setModel(e.target.value)} />
                 </div>
               </div>
             </div>
-            <div style={{display:"flex",gap:8}}>
-              <button className="btn btn-a" onClick={saveApiConfig} disabled={!apiKey.trim()} style={{flex:1,justifyContent:"center"}}>CONNECT AGENTS</button>
-              <button className="btn btn-g" onClick={()=>setShowApiPopup(false)}>SKIP FOR NOW</button>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn btn-a" onClick={saveApiConfig} disabled={!apiKey.trim()} style={{ flex: 1, justifyContent: "center" }}>CONNECT AGENTS</button>
+              <button className="btn btn-g" onClick={() => setShowApiPopup(false)}>SKIP FOR NOW</button>
             </div>
           </div>
         </div>
